@@ -8,15 +8,16 @@
  * @license  http://www.gnu.org/copyleft/gpl.html GNU General Public License
  * @link     http://www.bryyce.fr/
  */
-class Config extends MyEnregistrement
-{
-    const TABLE = "config";
-    /**
-     *  Constructeur de config
-     */
-    public function __construct() {
-        MyEnregistrement::$_labels = array('id'=>'id', 'maintenance'=>'maintenance', 'titre' => "titre", 'partenaires' => "partenaires", 'points_donnes' => 'points_donnes', 'montant_cagnotte' => 'montant_cagnotte');
-        parent::__construct(1);
+class Config {
+    private static $fields = array(
+            'membres' =>
+                array('id' => 'id', 'pseudo' => "pseudo", 'code' => "code", 'mail' => 'e-mail', 'verif' => 'verif',
+                    'nom' => 'nom', 'prenom' => 'prénom', 'adresse' => 'adresse', 'cp' => 'code postal', 'ville' => 'ville', 'pays' => 'pays',
+                    'paypal' => 'paypal', 'inscription' => 'inscription', 'connexion' => 'connexion', 'ip' => 'ip', 'banni' => 'banni',
+                    'niveau' => 'niveau', 'id_parrain' => 'id_parrain', 'id_situation_joueur' => 'id_situation_joueur', 'id_status' => 'id_status')
+        );
+    public static function getFields($table) {
+        return static::$fields[$table];
     }
 }
 ?>

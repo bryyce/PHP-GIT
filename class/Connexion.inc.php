@@ -190,4 +190,5 @@ class myPDO
         }
     }
 }
+myPDO::parametres('mysql:localhost;port=1131;dbname=piramidis', 'root', 'kaboul');
 ?>

@@ -17,7 +17,7 @@ abstract class MyEnregistrement extends Enregistrement{
      * @param <int> $_id id de l'objet a chercher dans la BDD si null un objet vide est créé
      */
     public function __construct($_id=null) {
-        $this->initAttributs(self::$_labels);
+        $this->initAttributs(self::etiquettes());
         if ($_id != null) {
             $this->lecture($_id);
             //  $this->date = new DateTime($this->date);
@@ -25,7 +25,7 @@ abstract class MyEnregistrement extends Enregistrement{
     }
 
     public function etiquettes() {
-        return self::$_labels;
+        return Config::getFields(self::table());
     }
 
     //	Donne la cle primaire de la table.
@@ -35,33 +35,30 @@ abstract class MyEnregistrement extends Enregistrement{
     /**php 5.3 seulement**/
     //	Donne la table contenant les Departement.
     protected static function table() {
-        return static::TABLE;
+        return strtolower(get_called_class())."s";
     }
 
-    protected static function AllBy($class , $cond){
-        $t = eval("return $class::table();");
+    protected static function AllBy($cond){
+        $class = get_called_class();
         $res = myPDO::get()->prepare(
 <<<SQL
     SELECT *
-    FROM {$t}
+    FROM {$class::table()}
          WHERE $cond
 SQL
         );
+        $records = array();
         // Execution de la requete avec le parametre et lecture du resultat
         if ($res->execute() && $enregistrements = $res->fetchAll(PDO::FETCH_ASSOC)) {
-            // Affectation des valeurs
-            $membres = array();
-            //var_dump($enregistrements);
-            foreach ($enregistrements as $enregistrement) {
-                $a = eval ("return new $class (".$enregistrement[eval (" return $class::CLE_PRI;")].");");
-                //$a = new Membre($enregistrement[Membre::CLE_PRI]);
-                $membres[] = $a;
-            }
-        } else {
-            // Lecture impossible
-            $membres = array();
-        }
-        return $membres;
+            // Affectation des valeurs 
+            foreach ($enregistrements as $enregistrement) 
+                $records[] = new $class ($enregistrement[$class::CLE_PRI]);
+        } 
+        return $records;
+    }
+    public static function All(){
+        return self::AllBy("1=1");
+        
     }
 }
 ?>
