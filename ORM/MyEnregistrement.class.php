@@ -8,8 +8,6 @@
 
 abstract class MyEnregistrement extends Enregistrement{
 
-    protected static $_labels = array();
-    protected static $_table = "";
     const CLE_PRI="id";
     /**
      * Constructeur d'enregistrement
@@ -59,6 +57,38 @@ SQL
     public static function All(){
         return self::AllBy("1=1");
         
+    }
+
+    public static function first() {
+        $records = static::AllBy("1=1 ORDER BY id LIMIT 0,1");
+        return $records[0];
+    }
+
+    public static function last() {
+        $records = static::AllBy("1=1 ORDER BY id DESC LIMIT 0,1");
+        return $records[0];
+    }
+
+    public static function __callStatic($method, $params)
+    {
+        if (!preg_match('/^(find|findFirst|count)By(\w+)$/', $method, $matches)) {
+            throw new \Exception("Call to undefined method {$method}");
+        }
+
+        $criteriaKeys = explode('_And_', preg_replace('/([a-z0-9])([A-Z])/', '$1_$2', $matches[2]));
+        $criteriaKeys = array_map('strtolower', $criteriaKeys);
+        $criteriaValues = array_slice($params, 0, count($criteriaKeys));
+        $criteria = array_combine($criteriaKeys, $criteriaValues);
+
+        $method = $matches[1];
+        return static::$method($criteria);
+    }
+
+    public static function find($_params){
+        $params = array();
+        foreach ($_params as $key => $value)
+            $params[] = "$key = '$value'";
+        return static::AllBy(implode(" AND ", $params));
     }
 }
 ?>
