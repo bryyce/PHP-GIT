@@ -8,6 +8,7 @@
  * @license  http://www.gnu.org/copyleft/gpl.html GNU General Public License
  * @link     http://www.bryyce.fr/
  */
+
 class Membre extends MyEnregistrement
 {
     private $_parrain = null;
