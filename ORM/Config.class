@@ -8,6 +8,7 @@
  * @license  http://www.gnu.org/copyleft/gpl.html GNU General Public License
  * @link     http://www.bryyce.fr/
  */
+namespace ORM;
 class Config {
     private static $fields = array(
             'membres' =>
@@ -15,6 +16,9 @@ class Config {
                     'nom' => 'nom', 'prenom' => 'prénom', 'adresse' => 'adresse', 'cp' => 'code postal', 'ville' => 'ville', 'pays' => 'pays',
                     'paypal' => 'paypal', 'inscription' => 'inscription', 'connexion' => 'connexion', 'ip' => 'ip', 'banni' => 'banni',
                     'niveau' => 'niveau', 'id_parrain' => 'id_parrain', 'id_situation_joueur' => 'id_situation_joueur', 'id_status' => 'id_status')
+        ,
+            'status' =>
+                array('id' => 'id', 'nom' => 'nom', 'points' => 'points', 'remise' => 'remise', 'partie_sup' => 'partie_sup')
         );
     public static function getFields($table) {
         return static::$fields[$table];

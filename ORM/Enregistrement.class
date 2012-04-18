@@ -7,6 +7,7 @@
  * @license  http://www.gnu.org/copyleft/gpl.html GNU General Public License
  * @link     http://www.bryyce.fr/
  */
+namespace ORM;
 require_once 'Connexion.inc.php' ;
 /**
  *  Modele abstrait d'enregistrement
@@ -29,7 +30,7 @@ abstract class Enregistrement
 SQL
    	);
         // Execution de la requete avec le parametre et lecture du resultat
-        if ($res->execute(array($_id)) && $enregistrement = $res->fetch(PDO::FETCH_ASSOC)) {
+        if ($res->execute(array($_id)) && $enregistrement = $res->fetch(\PDO::FETCH_ASSOC)) {
            // Affectation des valeurs
            $this->chargement($enregistrement);
         }
@@ -104,7 +105,7 @@ SQL
             if (is_null($valeur) // Valeur nulle
                     || (empty($valeur) && !is_numeric($valeur))) { // Valeur vide mais pas 0
                 // Affectation de null au parametre
-                // $res->bindValue(":{$cle}", null, PDO::PARAM_null);
+                // $res->bindValue(":{$cle}", null, \PDO::PARAM_null);
             } else {
                 // Affectation de la valeur de l'attribut au parametre
                 $res->bindValue(":{$cle}", $valeur);
@@ -114,7 +115,7 @@ SQL
         $res->execute();
         /* }
           else // La cle est-elle definie ? => NON !
-          throw new PDOException("Enregistrement impossible : Aucune clé définie"); */
+          throw new PDOException("Enregistrement impossible : Aucune clÃ© dÃ©finie"); */
     }
 
     /// Affichage de l'enregistrement
@@ -156,32 +157,5 @@ SQL
             $this->valeurs[$cle] = null ;
     }
 
-    /// Surcharge de __get pour donner acces aux valeurs sous la forme $e->attribut
-    public function __get($_cle /** Nom de la propriete */) {
-        if (array_key_exists($_cle, $this->valeurs)) // La propriete demandee est bien une cle du tableau des valeurs
-            return $this->valeurs[$_cle] ;
-        throw new Exception("Attribut '$_cle' inconnu dans '".get_class($this)."'");
-    }
-
-    /// Surcharge de __set pour donner acces aux valeurs sous la forme $e->attribut=val
-    public function __set($_cle /** Nom de la propriete */, $_val /** Sa nouvelle valeur */) {
-        if (array_key_exists($_cle, $this->valeurs)) // La propriete demandee est bien une cle du tableau des valeurs
-            return $this->valeurs[$_cle] = $_val ;
-        throw new Exception("Attribut '$_cle' inconnu dans '".get_class($this)."'");
-    }
-
-    /// Surcharge de __isset pour donner acces aux valeurs sous la forme isset($e->attribut)
-    public function __isset($_cle /** Nom de la propriete */) {
-        if (array_key_exists($_cle, $this->valeurs)) // La propriete demandee est bien une cle du tableau des valeurs
-            return isset($this->valeurs[$_cle]);
-        throw new Exception("Attribut '$_cle' inconnu dans '".get_class($this)."'");
-    }
-
-    /// Surcharge de __unset pour donner acces aux valeurs sous la forme unset($e->attribut)
-    public function __unset($_cle /** Nom de la propriete */) {
-        if (array_key_exists($_cle, $this->valeurs))// La propriete demandee est bien une cle du tableau des valeurs
-            return $this->valeurs[$_cle] = null;
-        throw new Exception("Attribut '$_cle' inconnu dans '" . get_class($this) . "'");
-    }
 }
 ?>

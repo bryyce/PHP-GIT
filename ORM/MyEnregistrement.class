@@ -6,19 +6,27 @@
  * @author bryyce
  */
 
+namespace ORM;
 abstract class MyEnregistrement extends Enregistrement{
 
     const CLE_PRI="id";
+    protected static $has_one = array();
+    protected static $has_many = array();
+    protected static $has_and_belongs_to_many = array();
+    protected static $relations_elem = array();
     /**
      * Constructeur d'enregistrement
      *
-     * @param <int> $_id id de l'objet a chercher dans la BDD si null un objet vide est créé
+     * @param <int> $_id id de l'objet a chercher dans la BDD si null un objet vide est crÃ©Ã©
      */
     public function __construct($_id=null) {
         $this->initAttributs(self::etiquettes());
         if ($_id != null) {
             $this->lecture($_id);
             //  $this->date = new DateTime($this->date);
+        }
+        foreach(static::$has_many as $k => $v){
+            
         }
     }
 
@@ -33,7 +41,12 @@ abstract class MyEnregistrement extends Enregistrement{
     /**php 5.3 seulement**/
     //	Donne la table contenant les Departement.
     protected static function table() {
-        return strtolower(get_called_class())."s";
+        $table =strtolower(preg_replace('#([a-zA-Z]+\\\\)+([a-zA-Z]+)#i','$2',get_called_class()));
+        if( substr($table, strlen($table) - 1) != 's')
+            return $table."s";
+        else
+            return $table;
+        
     }
 
     protected static function AllBy($cond){
@@ -47,7 +60,7 @@ SQL
         );
         $records = array();
         // Execution de la requete avec le parametre et lecture du resultat
-        if ($res->execute() && $enregistrements = $res->fetchAll(PDO::FETCH_ASSOC)) {
+        if ($res->execute() && $enregistrements = $res->fetchAll(\PDO::FETCH_ASSOC)) {
             // Affectation des valeurs 
             foreach ($enregistrements as $enregistrement) 
                 $records[] = new $class ($enregistrement[$class::CLE_PRI]);
@@ -89,6 +102,61 @@ SQL
         foreach ($_params as $key => $value)
             $params[] = "$key = '$value'";
         return static::AllBy(implode(" AND ", $params));
+    }
+    
+    
+    /// Surcharge de __get pour donner acces aux valeurs sous la forme $e->attribut
+    public function __get($_cle /** Nom de la propriete */) {
+        if (array_key_exists($_cle, $this->valeurs)) // La propriete demandee est bien une cle du tableau des valeurs
+            return $this->valeurs[$_cle] ;
+        else if(array_key_exists($_cle, static::$has_one)){
+            $id_assoc= 'id_'.$_cle;
+            $class = 'Model\\'.ucfirst($_cle); 
+            if (!array_key_exists($_cle,static::$relations_elem) || static::$relations_elem[$_cle] == null) {
+                if ($this->$id_assoc) {
+                    static::$relations_elem[$_cle] = $class::AllBy("id = {$this->$id_assoc}");
+                    static::$relations_elem[$_cle]= self::$relations_elem[$_cle][0] ;
+                }else
+                    static::$relations_elem[$_cle] = new $class;
+            }
+            return self::$relations_elem[$_cle];
+        }
+        else if(array_key_exists($_cle, static::$has_many)){
+            $id_assoc= 'id_'.$_cle;
+            $class = 'Model\\'.ucfirst($_cle); 
+            if (!array_key_exists($_cle,static::$relations_elem) || static::$relations_elem[$_cle] == null) {
+                if ($this->$id_assoc) {
+                    static::$relations_elem[$_cle] = $class::AllBy("id = {$this->$id_assoc}");
+                }else
+                    static::$relations_elem[$_cle] = array();
+            }
+            return self::$relations_elem[$_cle];
+        }
+        else if(array_key_exists($_cle, self::$has_and_belongs_to_many)){
+            
+        }
+        throw new \Exception("Attribut '$_cle' inconnu dans '".get_class($this)."'");
+    }
+
+    /// Surcharge de __set pour donner acces aux valeurs sous la forme $e->attribut=val
+    public function __set($_cle /** Nom de la propriete */, $_val /** Sa nouvelle valeur */) {
+        if (array_key_exists($_cle, $this->valeurs)) // La propriete demandee est bien une cle du tableau des valeurs
+            return $this->valeurs[$_cle] = $_val ;
+        throw new Exception("Attribut '$_cle' inconnu dans '".get_class($this)."'");
+    }
+
+    /// Surcharge de __isset pour donner acces aux valeurs sous la forme isset($e->attribut)
+    public function __isset($_cle /** Nom de la propriete */) {
+        if (array_key_exists($_cle, $this->valeurs)) // La propriete demandee est bien une cle du tableau des valeurs
+            return isset($this->valeurs[$_cle]);
+        throw new Exception("Attribut '$_cle' inconnu dans '".get_class($this)."'");
+    }
+
+    /// Surcharge de __unset pour donner acces aux valeurs sous la forme unset($e->attribut)
+    public function __unset($_cle /** Nom de la propriete */) {
+        if (array_key_exists($_cle, $this->valeurs))// La propriete demandee est bien une cle du tableau des valeurs
+            return $this->valeurs[$_cle] = null;
+        throw new Exception("Attribut '$_cle' inconnu dans '" . get_class($this) . "'");
     }
 }
 ?>

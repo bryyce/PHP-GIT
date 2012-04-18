@@ -1,6 +1,6 @@
 <?php
 /**
- * Membre Class Doc Comment
+ * Status Class Doc Comment
  *
  * @category Class
  * @package  include.class
@@ -10,7 +10,7 @@
  */
 namespace Model;
 use ORM;
-class Membre extends ORM\MyEnregistrement
+class Status extends ORM\MyEnregistrement
 {
     private $_parrain = null;
     private $_situation_membre = null;
@@ -18,7 +18,6 @@ class Membre extends ORM\MyEnregistrement
     private $_commandes = null;
     private $_status = null;
     
-    protected static $has_one = array('status' => array());
     /**
      * Constructeur de InstantGagnant
      *

@@ -8,6 +8,7 @@
  * @license  http://www.gnu.org/copyleft/gpl.html GNU General Public License
  * @link     http://www.bryyce.fr/
  */
+namespace ORM;
 error_reporting(E_ALL);
 /// Mise en place d'une capture des exceptions non attrappées
 function exceptionHandler($exception /** L'Exception non attrappée */) {
@@ -16,7 +17,7 @@ function exceptionHandler($exception /** L'Exception non attrappée */) {
     echo $exception->getTraceAsString()."\n" ;
     echo "</pre>\n" ;
 }
-set_exception_handler('exceptionHandler');
+set_exception_handler('ORM\exceptionHandler');
 
 /// Outil de dump de variable
 function dump($var /** La variable é afficher */)
@@ -87,14 +88,14 @@ class myPDO
                 || is_null(self::$_pass))
             throw new Exception("Construction impossible : les paramêtres de connexion sont absents");
         // Etablir la connexion
-        $this->_pdo = new PDO(self::$_dsn, self::$_user, self::$_pass);
+        $this->_pdo = new \PDO(self::$_dsn, self::$_user, self::$_pass);
         // Mise en place du mode "Exception" pour les erreurs PDO
-        $this->_pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $this->_pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         // Cas particulier de MySQL
-        switch ($this->_pdo->getAttribute(PDO::ATTR_DRIVER_NAME)){
+        switch ($this->_pdo->getAttribute(\PDO::ATTR_DRIVER_NAME)){
             case 'mysql' :
                 // Pour que cela fonctionne sur MySQL... C'est pas beau l'abstraction ?
-                $this->_pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
+                $this->_pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
                 // Passage du client MySQL en utf-8
                 $this->_pdo->query("SET CHARACTER SET 'utf8'");
             break ;
@@ -169,9 +170,9 @@ class myPDO
             ) {
         // La méthode appelée fait-elle partie de la classe PDO
         if (!method_exists($this->_pdo, $methodName))
-            throw new Exception("PDO::$methodName n'existe pas");
+            throw new Exception("\PDO::$methodName n'existe pas");
         // Message de debogage
-        self::msg("PDO::$methodName (".implode($methodArguments, ", ").")");
+        self::msg("\PDO::$methodName (".implode($methodArguments, ", ").")");
         // Appel de la méthode avec l'objet PDO
         $result = call_user_func_array(array($this->_pdo, $methodName), $methodArguments);
         // Selon le nom de la méthode
@@ -180,7 +181,7 @@ class myPDO
             // Cas 'prepare' ou 'query' => mise en place du fetchMode par tableau associatif
             case "prepare" :
             case "query" :
-                $result->setFetchMode(PDO::FETCH_NAMED);
+                $result->setFetchMode(\PDO::FETCH_NAMED);
                 // Retourne un objet myPDOStatement
                 return new myPDOStatement($result);
             // Dans tous les autres cas
