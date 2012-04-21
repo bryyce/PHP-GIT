@@ -2,10 +2,11 @@
 /**
  * Enregistrement Class Doc Comment
  *
- * @package  Include.class
- * @author bryyce
- * @license  http://www.gnu.org/copyleft/gpl.html GNU General Public License
- * @link     http://www.bryyce.fr/
+ * @category    Class
+ * @package     ORM
+ * @author      bryyce
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU General Public License
+ * @link		http://www.bryyce.fr/
  */
 namespace ORM;
 require_once 'Connexion.inc.php' ;
@@ -36,7 +37,7 @@ SQL
         }
         else {
             // Lecture impossible
-            throw new Exception("Lecture de l'enregistrement {$_id} impossible");
+            throw new \Exception("Lecture de l'enregistrement {$_id} impossible");
         }
     }
     /// Donne le nom de la table contenant les informations
@@ -115,7 +116,7 @@ SQL
         $res->execute();
         /* }
           else // La cle est-elle definie ? => NON !
-          throw new PDOException("Enregistrement impossible : Aucune clÃ© dÃ©finie"); */
+          throw new PDOException("Enregistrement impossible : Aucune clÃƒÂ© dÃƒÂ©finie"); */
     }
 
     /// Affichage de l'enregistrement

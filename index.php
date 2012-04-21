@@ -1,7 +1,7 @@
 <?php
-print_r(Model\Membre::All());
+//print_r(Model\Membre::All());
 print("------------<br>");
-//print_r(Membre::first());
-//print_r(Model\Membre::findByPaypal(""));
-print_r(Model\Membre::first()->status);
+$m =Model\Membre::first();
+print_r($m->status->membre->status);
+echo round(memory_get_usage()/(1024),2)." Ko";
 ?>

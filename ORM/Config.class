@@ -2,11 +2,11 @@
 /**
  * Config Class Doc Comment
  *
- * @category Class
- * @package  include.class
- * @author bryyce
- * @license  http://www.gnu.org/copyleft/gpl.html GNU General Public License
- * @link     http://www.bryyce.fr/
+ * @category	Class
+ * @package		ORM
+ * @author		bryyce
+ * @license		http://www.gnu.org/copyleft/gpl.html GNU General Public License
+ * @link		http://www.bryyce.fr/
  */
 namespace ORM;
 class Config {

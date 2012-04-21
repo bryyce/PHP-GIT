@@ -2,16 +2,16 @@
 /**
  * Connexion Class Doc Comment
  *
- * @category Class
- * @package  Include.class
- * @author bryyce
- * @license  http://www.gnu.org/copyleft/gpl.html GNU General Public License
- * @link     http://www.bryyce.fr/
+ * @category	Class
+ * @package		ORM
+ * @author		bryyce
+ * @license		http://www.gnu.org/copyleft/gpl.html GNU General Public License
+ * @link		http://www.bryyce.fr/
  */
 namespace ORM;
 error_reporting(E_ALL);
-/// Mise en place d'une capture des exceptions non attrappées
-function exceptionHandler($exception /** L'Exception non attrappée */) {
+/// Mise en place d'une capture des exceptions non attrappÃ©es
+function exceptionHandler($exception /** L'Exception non attrappÃ©e */) {
     echo "<pre>\n" ;
     echo $exception->getMessage()."\n" ;
     echo $exception->getTraceAsString()."\n" ;
@@ -20,7 +20,7 @@ function exceptionHandler($exception /** L'Exception non attrappée */) {
 set_exception_handler('ORM\exceptionHandler');
 
 /// Outil de dump de variable
-function dump($var /** La variable é afficher */)
+function dump($var /** La variable Ã© afficher */)
 {
     echo "<pre>\n" ;
     var_dump($var);
@@ -47,23 +47,23 @@ class myPDOStatement
         $this->_pdoStatement = null ;
     }
 
-    /// Surcharge de toutes les méthodes inexistantes de myPDOStatement pour pouvoir appeler celles de PDOStatement
-    final public function __call($methodName      /** Nom de la méthode */,
-            $methodArguments /** Tableau des paramétres */
+    /// Surcharge de toutes les mÃ©thodes inexistantes de myPDOStatement pour pouvoir appeler celles de PDOStatement
+    final public function __call($methodName      /** Nom de la mÃ©thode */,
+            $methodArguments /** Tableau des paramÃ©tres */
             ) {
-        // La méthode appelée fait-elle partie de la classe PDOStatement
+        // La mÃ©thode appelÃ©e fait-elle partie de la classe PDOStatement
         if (!method_exists($this->_pdoStatement, $methodName))
             throw new Exception("PDOStatement::$methodName n'existe pas");
         // Message de debogage
         myPDO::msg("PDOStatement::".$methodName." (".var_export($methodArguments, true).")");
-        // Appel de la méthode avec l'objet PDOStatement
+        // Appel de la mÃ©thode avec l'objet PDOStatement
         return call_user_func_array(array($this->_pdoStatement, $methodName), $methodArguments);
     }
 
 }
 
 /**
- *  Classe permettant de faire une connexion unique et automatique é la BD
+ *  Classe permettant de faire une connexion unique et automatique Ã© la BD
  */
 class myPDO
 {
@@ -77,16 +77,16 @@ class myPDO
     private static $_user  = null ;
     /// Mot de passe
     private static $_pass  = null ;
-    /// Connexion é la base
+    /// Connexion Ã© la base
     private        $_pdo   = null ;
 
-    /// Constructeur privé
+    /// Constructeur privÃ©
     final private function __construct() {
         self::msg("Demande construction PDO...");
         if (       is_null(self::$_dsn)
                 || is_null(self::$_user)
                 || is_null(self::$_pass))
-            throw new Exception("Construction impossible : les paramêtres de connexion sont absents");
+            throw new Exception("Construction impossible : les paramÃªtres de connexion sont absents");
         // Etablir la connexion
         $this->_pdo = new \PDO(self::$_dsn, self::$_user, self::$_pass);
         // Mise en place du mode "Exception" pour les erreurs PDO
@@ -106,41 +106,41 @@ class myPDO
             break ;
             */
         }
-        self::msg("Construction PDO terminée");
+        self::msg("Construction PDO terminÃ©e");
     }
 
     /// Destructeur
     final public function __destruct() {
         self::msg("Demande de destruction PDO...");
-        // S'il y a une connexion établie...
+        // S'il y a une connexion Ã©tablie...
         if (!is_null($this->_pdo))
         {
             // ... il faut se deconnecter
-            self::msg("Demande de déconnexion...");
+            self::msg("Demande de dÃ©connexion...");
             $this->_pdo   = null ;
             self::$_mypdo = null ;
-            self::msg("Deconnexion effectuée");
+            self::msg("Deconnexion effectuÃ©e");
         }
-        self::msg("Destruction PDO terminée");
+        self::msg("Destruction PDO terminÃ©e");
     }
 
-    /// Récuperer le singleton
+    /// RÃ©cuperer le singleton
     final public static function get() {
         self::msg("Recherche de l'instance...");
         // Une instance est-elle disponible ?
         if (!isset(self::$_mypdo))
             self::$_mypdo = new myPDO();
-        self::msg("Instance trouvée");
+        self::msg("Instance trouvÃ©e");
         return self::$_mypdo ;
     }
 
-    /// Fixer les paramétres de connexion
+    /// Fixer les paramÃ©tres de connexion
     public static function parametres($_dsn, $_user, $_pass) {
-        // self::msg("Demande de positionnement des paramétres de connexion...");
+        // self::msg("Demande de positionnement des paramÃ©tres de connexion...");
         self::$_dsn  = $_dsn ;
         self::$_user = $_user ;
         self::$_pass = $_pass ;
-        // self::msg("Positionnement des paramétres de connexion terminé");
+        // self::msg("Positionnement des paramÃ©tres de connexion terminÃ©");
     }
 
     /// Interdit le clonage du singleton
@@ -148,7 +148,7 @@ class myPDO
         throw new Exception("Clonage de ".__CLASS__." interdit !");
     }
 
-    /// Affichage de messages de contréle
+    /// Affichage de messages de contrÃ©le
     final public static function msg($m /** Le message */) {
         if (self::$_debug)
             echo "\n<!-- $m -->\n" ;
@@ -164,18 +164,18 @@ class myPDO
         self::$_debug = false ;
     }
 
-    /// Surcharge de toutes les méthodes inexistantes de myPDO pour pouvoir appeler celles de PDO
-    final public function __call($methodName      /** Nom de la méthode */,
-            $methodArguments /** Tableau des paramétres */
+    /// Surcharge de toutes les mÃ©thodes inexistantes de myPDO pour pouvoir appeler celles de PDO
+    final public function __call($methodName      /** Nom de la mÃ©thode */,
+            $methodArguments /** Tableau des paramÃ©tres */
             ) {
-        // La méthode appelée fait-elle partie de la classe PDO
+        // La mÃ©thode appelÃ©e fait-elle partie de la classe PDO
         if (!method_exists($this->_pdo, $methodName))
             throw new Exception("\PDO::$methodName n'existe pas");
         // Message de debogage
         self::msg("\PDO::$methodName (".implode($methodArguments, ", ").")");
-        // Appel de la méthode avec l'objet PDO
+        // Appel de la mÃ©thode avec l'objet PDO
         $result = call_user_func_array(array($this->_pdo, $methodName), $methodArguments);
-        // Selon le nom de la méthode
+        // Selon le nom de la mÃ©thode
         switch ($methodName)
         {
             // Cas 'prepare' ou 'query' => mise en place du fetchMode par tableau associatif

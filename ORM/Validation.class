@@ -1,35 +1,34 @@
 <?php
-/* 
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * Description of Validation
  *
- * @author bryyce
+ * @category	Class
+ * @package		ORM
+ * @author		bryyce
+ * @license		http://www.gnu.org/copyleft/gpl.html GNU General Public License
+ * @link		http://www.bryyce.fr/
  */
 namespace ORM;
 class Validation {
 
     public static function isNumeric($param) {
-        return $params;
+        return $param;
     }
 
     public static function isInteger($param) {
-        return $params;
+        return $param;
     }
 
     public static function isString($param) {
-        return $params;
+        return $param;
     }
 
     public static function isMail($param) {
-        return $params;
+        return $param;
     }
 
     public static function isNotEmpty($param) {
-        return $params;
+        return $param;
     }
 }
 ?>

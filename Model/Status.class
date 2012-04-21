@@ -2,21 +2,17 @@
 /**
  * Status Class Doc Comment
  *
- * @category Class
- * @package  include.class
- * @author bryyce
- * @license  http://www.gnu.org/copyleft/gpl.html GNU General Public License
- * @link     http://www.bryyce.fr/
+ * @category	Class
+ * @package		Model
+ * @author		bryyce
+ * @license		http://www.gnu.org/copyleft/gpl.html GNU General Public License
+ * @link		http://www.bryyce.fr/
  */
 namespace Model;
 use ORM;
 class Status extends ORM\MyEnregistrement
 {
-    private $_parrain = null;
-    private $_situation_membre = null;
-    private $_messages = null;
-    private $_commandes = null;
-    private $_status = null;
+	protected static $belongs_to = array('membre'=> array());
     
     /**
      * Constructeur de InstantGagnant

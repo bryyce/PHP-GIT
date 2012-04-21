@@ -2,12 +2,13 @@
 /**
  * Session Class Doc Comment
  *
- * @category Class
- * @package  include.class
- * @author bryyce
- * @license  http://www.gnu.org/copyleft/gpl.html GNU General Public License
- * @link     http://www.bryyce.fr/
+ * @category	Class
+ * @package		Model
+ * @author		bryyce
+ * @license		http://www.gnu.org/copyleft/gpl.html GNU General Public License
+ * @link		http://www.bryyce.fr/
  */
+namespace Model;
 class Session
 {
     private static $_membre;
