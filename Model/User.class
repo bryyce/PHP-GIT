@@ -1,0 +1,51 @@
+<?php
+/**
+ * Membre Class Doc Comment
+ *
+ * @category	Class
+ * @package		Model
+ * @author		bryyce
+ * @license		http://www.gnu.org/copyleft/gpl.html GNU General Public License
+ * @link		http://www.bryyce.fr/
+ */
+namespace Model;
+use ORM;
+class User extends ORM\MyEnregistrement
+{
+    protected static $has_and_belongs_to_many = array('profiles' => array());
+    /**
+     * Constructeur de Membre
+     *
+     * @param <int> $_id id de l'objet a chercher dans la BDD si null un objet vide est crÃƒÂ©ÃƒÂ©
+     */
+    public function __construct($_id=null) {
+        parent::__construct($_id);
+    }
+
+
+    //***********************************//
+    //  Fin Fonctions membres protégé  //
+    //***********************************//
+    public function validation() {
+        $msg = "<ul>";
+        if (count($this->dispo('pseudo')) == 1)
+            $msg .= 'Ce pseudo existe dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©jÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â , veuillez en choisir un autre';
+        if (count($this->dispo('mail')) == 1)
+            $msg .= 'Cette adresse e-mail existe dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©jÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â , veuillez en choisir une autre';
+        if (count($this->dispo('ip')) == 1)
+            $msg .= 'Un compte par ordinateur est autorisÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©';
+        if (strlen($this->pseudo) > 15 OR strlen($this->pseudo) < 3)
+            $msg .= 'Vous devez choisir un pseudo compris entre 3 et 15 caractÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¨res';
+        if (preg_match("#[^a-zA-Z0-9_-]#", $this->pseudo))
+            $msg .= 'La syntaxe de votre pseudo est incorrecte';
+        if (strlen($this->code) < 6 OR strlen($this->code) > 21)
+            $msg .= 'Vous devez choisir un code secret compris entre 6 et 21 caractÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¨res';
+        if (!preg_match("#^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$#", $this->mail))
+            $msg .= 'La syntaxe de votre adresse e-mail est incorrecte';
+        if ($msg != "<ul>")
+            throw new Exception($msg . "</ul>");
+    }
+
+
+}
+?>

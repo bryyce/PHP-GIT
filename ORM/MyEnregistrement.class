@@ -3,7 +3,8 @@
  * 
  * Description of MyEnregistrement
  *
- * @todo        gerer le set pour les relations
+ * @todo        gerer le set pour hbtm
+ * @todo		unset poour les relations
  * @category    Class
  * @package     ORM
  * @author      bryyce
@@ -23,7 +24,7 @@ abstract class MyEnregistrement extends Enregistrement{
     /**
      * Constructeur d'enregistrement
      *
-     * @param <int> $_id id de l'objet a chercher dans la BDD si null un objet vide est crÃƒÆ’Ã‚Â©ÃƒÆ’Ã‚Â©
+     * @param <int> $_id id de l'objet a chercher dans la BDD si null un objet vide est crÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©
      */
     public function __construct($_id=null) {
         $this->initAttributs(self::etiquettes());
@@ -36,28 +37,34 @@ abstract class MyEnregistrement extends Enregistrement{
 	public static function loadRelations(){
         foreach(static::$has_one as $k => $v){   
 			if(!array_key_exists('primary_key', static::$has_one[$k]))         
-				static::$has_one[$k]['primary_key'] = 'id_'.$k;
+				static::$has_one[$k]['primary_key'] = $k . '_id';
 			if(!array_key_exists('class', static::$has_one[$k]))
 				static::$has_one[$k]['class'] = 'Model\\'.ucfirst($k); 
         }
         foreach(static::$has_many as $k => $v){
 			if(!array_key_exists('primary_key', static::$has_many[$k]))
-				static::$has_many[$k]['primary_key'] = 'id_'.$k;
+				static::$has_many[$k]['primary_key'] = $k . '_id';
 			if(!array_key_exists('class', static::$has_many[$k]))
 				static::$has_many[$k]['class'] = 'Model\\'.ucfirst($k); 
         }
-        foreach(static::$has_and_belongs_to_many as $k => $v){  
+        foreach(static::$has_and_belongs_to_many as $k => $v){
+			$class = 'Model\\'.ucfirst(substr($k,0,strlen($k)-1));
 			if(!array_key_exists('primary_key', static::$has_and_belongs_to_many[$k]))
-				static::$has_and_belongs_to_many[$k]['primary_key'] = 'id_'.$k;
+				static::$has_and_belongs_to_many[$k]['primary_key'] = substr($k,0,strlen($k)-1) . '_id';
 			if(!array_key_exists('class', static::$has_and_belongs_to_many[$k]))
-				static::$has_and_belongs_to_many[$k]['class'] = 'Model\\'.ucfirst($k); 
-        }
+				static::$has_and_belongs_to_many[$k]['class'] = $class; 
+			if(array_key_exists('master', static::$has_and_belongs_to_many[$k]) && static::$has_and_belongs_to_many[$k]['master'] == false)	
+				static::$has_and_belongs_to_many[$k]['join_table'] =  $class::table() . '_' . static::table();
+			else
+				static::$has_and_belongs_to_many[$k]['join_table'] = static::table() . '_' . $class::table();
+		}
         foreach(static::$belongs_to as $k => $v){  
 			if(!array_key_exists('primary_key', static::$belongs_to[$k]))
-				static::$belongs_to[$k]['primary_key'] = 'id_'.static::table();
+				static::$belongs_to[$k]['primary_key'] = static::table() . '_id';
 			if(!array_key_exists('class', static::$belongs_to[$k]))
 				static::$belongs_to[$k]['class'] = 'Model\\'.ucfirst($k); 
-		}			
+		}		
+		
 	}
     public function etiquettes() {
         return Config::getFields(self::table());
@@ -78,14 +85,12 @@ abstract class MyEnregistrement extends Enregistrement{
         
     }
 
-    protected static function AllBy($cond){
+    protected static function allBy($cond){
         $table = static::table();
-        $res = myPDO::get()->prepare(
-<<<SQL
-    SELECT *
-    FROM {$table}
-         WHERE $cond
-SQL
+        $res = myPDO::get()->prepare('
+			SELECT *
+			FROM ' . $table . '
+			WHERE ' . $cond
         );
         $records = array();
         // Execution de la requete avec le parametre et lecture du resultat
@@ -96,24 +101,50 @@ SQL
         } 
         return $records;
     }
-    public static function All(){
-        return self::AllBy("1=1");
-        
+	
+    public static function all(){
+        return self::allBy("1=1");        
     }
 
-    public static function first() {
-        $records = static::AllBy("1=1 ORDER BY id LIMIT 0,1");
+    public static function first($_params = array()){
+        $params = array();
+        foreach ($_params as $key => $value)
+            $params[] = "$key = '$value'";
+        $records = static::allBy(implode(" AND ", $params) . "1=1 ORDER BY id LIMIT 0,1");
         return $records[0];
     }
 
-    public static function last() {
-        $records = static::AllBy("1=1 ORDER BY id DESC LIMIT 0,1");
+    public static function last($_params = array()){
+        $params = array();
+        foreach ($_params as $key => $value)
+            $params[] = "$key = '$value'";
+        $records = static::allBy(implode(" AND ", $params) . "1=1 ORDER BY id DESC LIMIT 0,1");
         return $records[0];
+    }
+	
+	public static function count($_params = array()){
+        $params = array();
+        foreach ($_params as $key => $value)
+            $params[] = "$key = '$value'";
+		$conditions = implode(' AND ', $params);
+		$table = static::table();
+        $res = myPDO::get()->prepare('
+			SELECT 
+				COUNT(*) as nb
+			FROM 
+				'.$table.'
+			WHERE 
+				'.$conditions
+        );
+        // Execution de la requete avec le parametre et lecture du resultat
+        if ($res->execute() && $enregistrement = $res->fetchAll(\PDO::FETCH_ASSOC))
+            return $enregistrement['nb'];
+        return 0;
     }
 
     public static function __callStatic($method, $params)
     {
-        if (!preg_match('/^(find|findFirst|count)By(\w+)$/', $method, $matches)) {
+        if (!preg_match('/^(find|first|last|count)By(\w+)$/', $method, $matches)) {
             throw new \Exception("Call to undefined method {$method}");
         }
 
@@ -130,7 +161,7 @@ SQL
         $params = array();
         foreach ($_params as $key => $value)
             $params[] = "$key = '$value'";
-        return static::AllBy(implode(" AND ", $params));
+        return static::allBy(implode(" AND ", $params));
     }
     
     
@@ -148,7 +179,7 @@ SQL
                 }else
                     static::$relations_elem[$_cle] = new $class;
             }
-            return self::$relations_elem[$_cle];
+            return static::$relations_elem[$_cle];
         }
         else if(array_key_exists($_cle, static::$has_many)){
             $id_assoc   = static::$has_many[$_cle]['primary_key'];
@@ -159,10 +190,42 @@ SQL
                 else
                     static::$relations_elem[$_cle] = array();
             }
-            return self::$relations_elem[$_cle];
+            return static::$relations_elem[$_cle];
         }
-        else if(array_key_exists($_cle, self::$has_and_belongs_to_many)){
-            
+        else if(array_key_exists($_cle, static::$has_and_belongs_to_many)){
+			$id_assoc		= strtolower(preg_replace('#([a-zA-Z]+\\\\)+([a-zA-Z]+)#i','$2',get_called_class())). '_id';
+			$id_assoc_2		= static::$has_and_belongs_to_many[$_cle]['primary_key'];
+			$_join_table	= static::$has_and_belongs_to_many[$_cle]['join_table'];
+            $class			= static::$has_and_belongs_to_many[$_cle]['class'];
+			if (!array_key_exists($_cle,static::$relations_elem) || static::$relations_elem[$_cle] == null){
+				if($this->id){
+					$table = $class::table();
+					$res = myPDO::get()->prepare('
+						SELECT 
+							*
+						FROM 
+							'.$table.'
+						INNER JOIN 
+							'.$_join_table.'
+						ON 
+							'.$_join_table.'.'.$id_assoc_2.' = '.$table.'.'.$class::cle_pri().'
+						WHERE 
+							'.$_join_table.'.'.$id_assoc.' = '.$this->id
+					);
+					$records = array();
+					// Execution de la requete avec le parametre et lecture du resultat
+					if ($res->execute() && $enregistrements = $res->fetchAll(\PDO::FETCH_ASSOC)) {
+						// Affectation des valeurs 
+						foreach ($enregistrements as $enregistrement) 
+							$records[] = new $class ($enregistrement[$class::CLE_PRI]);
+					} 
+
+					static::$relations_elem[$_cle] = $records;
+				}
+				else 
+					static::$relations_elem[$_cle] = array();
+			}
+            return static::$relations_elem[$_cle];            
         }
 		else if(array_key_exists($_cle, static::$belongs_to)){
             $id_assoc= static::$belongs_to[$_cle]['primary_key'];
@@ -175,7 +238,7 @@ SQL
                 }else
                     static::$relations_elem[$_cle] = new $class;
             }
-            return self::$relations_elem[$_cle];
+            return static::$relations_elem[$_cle];
         }
         throw new \Exception("Attribut '$_cle' inconnu dans '".get_class($this)."'");
     }

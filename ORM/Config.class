@@ -11,14 +11,22 @@
 namespace ORM;
 class Config {
     private static $fields = array(
-            'membres' =>
-                array('id' => 'id', 'pseudo' => "pseudo", 'code' => "code", 'mail' => 'e-mail', 'verif' => 'verif',
-                    'nom' => 'nom', 'prenom' => 'prénom', 'adresse' => 'adresse', 'cp' => 'code postal', 'ville' => 'ville', 'pays' => 'pays',
-                    'paypal' => 'paypal', 'inscription' => 'inscription', 'connexion' => 'connexion', 'ip' => 'ip', 'banni' => 'banni',
-                    'niveau' => 'niveau', 'id_parrain' => 'id_parrain', 'id_situation_joueur' => 'id_situation_joueur', 'id_status' => 'id_status')
+            'users' =>
+                array('id' => 'id', 
+					'login' => "login", 
+					'mail' => 'e-mail',
+					'password' => 'mot de passe',
+					'salt' => 'salt',
+					'created_at' => 'crée le',
+					'updated_at' => 'mis à jour le'
+				)
         ,
-            'status' =>
-                array('id' => 'id', 'nom' => 'nom', 'points' => 'points', 'remise' => 'remise', 'partie_sup' => 'partie_sup')
+            'profiles' =>
+                array('id' => 'id', 
+					'name' => 'nom', 
+					'first_name' => 'prenom', 
+					'address' => 'adresse', 
+					'last_login' => 'dernière connexion')
         );
     public static function getFields($table) {
         return static::$fields[$table];
