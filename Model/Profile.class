@@ -12,7 +12,7 @@ namespace Model;
 use ORM;
 class Profile extends ORM\MyEnregistrement
 {
-	protected static $belongs_to = array('membre'=> array());
+	protected static $has_and_belongs_to_many = array('users'=> array('master'=>false));
     
     /**
      * Constructeur de InstantGagnant

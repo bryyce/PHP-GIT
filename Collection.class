@@ -1,0 +1,82 @@
+<?php
+
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Description of Collection
+ *
+ * @author bryyce
+ */
+class Collection {
+	private $collection = array();
+	private $current_index = 0;
+	
+	public function __construct(array $array = array()) {
+		$this->collection = $array;
+	}
+	
+	public function push($element){
+		$this->collection[] = $element;
+	}
+	
+	public function pop(){
+		return array_pop($this->collection);
+	}
+	
+	public function first(){
+		return $this->collection[0];
+	}
+	
+	public function last(){
+		return $this->collection[$this->count() - 1];
+	}
+	
+	public function count(){
+		return count($this->collection);
+	}
+
+	public function __invoke($num){
+		if(is_int($num))
+			return $this->collection[$num];
+		else return null;
+	}
+
+	public function next(){
+		$this->current_index ++;
+		if($this->current_index > $this->count())
+			return null;
+		return $this->collection[$this->current_index - 1];		
+	}
+
+	public function prev(){
+		$this->current_index --;
+		if($this->current_index < 0)
+			return null;
+		return $this->collection[$this->current_index];
+	}
+
+	public function join(array $array){
+		return $this->collection = array_merge($this->collection, $array);
+	}
+	
+	public function reset(){
+		$this->current_index = 0;
+	}
+	
+	public function remove($element){
+		foreach($this->collection as $key => $value)
+			if($value === $element){
+				unset($this->collection[$key]);
+				break;
+			}
+		$this->collection = array_values($this->collection);
+	}
+	
+	public function __destruct() {
+		unset($this->collection);
+	}
+}
+?>

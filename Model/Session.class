@@ -11,7 +11,7 @@
 namespace Model;
 class Session
 {
-    private static $_membre;
+    private static $_user;
     public static function CreateSession()
     {
 		session_start();
@@ -19,7 +19,7 @@ class Session
 			session_destroy();
 			return false;
 		}
-                Session::$_membre=new Membre($_SESSION['id']);
+                Session::$_user=new User($_SESSION['id']);
 		return true;
     }
     public static function CreateSessionOrDie($page){
@@ -35,10 +35,10 @@ class Session
         }
     }
     public static function isAdmin(){
-        return Session::$_membre->isAdmin();
+        return Session::$_user->isAdmin();
     }
-    public static function getMembre(){
-        return Session::$_membre;
+    public static function currentUser(){
+        return Session::$_user;
     }
 }
 ?>

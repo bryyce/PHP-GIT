@@ -10,6 +10,10 @@
  */
 namespace ORM;
 class Config {
+	private static $tables = array(
+		'user'		=> 'users',
+		'profile'	=> 'profiles',
+	);
     private static $fields = array(
             'users' =>
                 array('id' => 'id', 
@@ -30,6 +34,9 @@ class Config {
         );
     public static function getFields($table) {
         return static::$fields[$table];
+    }
+    public static function getTable($class) {
+        return static::$tables[$class];
     }
 }
 ?>

@@ -74,15 +74,14 @@ abstract class MyEnregistrement extends Enregistrement{
     protected static function cle_pri() {
         return self::CLE_PRI;
     }
+	
+	protected static function getClassName(){
+		return strtolower(preg_replace('#([a-zA-Z]+\\\\)+([a-zA-Z]+)#i','$2',get_called_class()));
+	}
     /**php 5.3 seulement**/
     //	Donne la table contenant les Departement.
     protected static function table() {
-        $table =strtolower(preg_replace('#([a-zA-Z]+\\\\)+([a-zA-Z]+)#i','$2',get_called_class()));
-        if( substr($table, strlen($table) - 1) != 's')
-            return $table."s";
-        else
-            return $table;
-        
+        return Config::getTable(self::getClassName());
     }
 
     protected static function allBy($cond){
@@ -193,7 +192,7 @@ abstract class MyEnregistrement extends Enregistrement{
             return static::$relations_elem[$_cle];
         }
         else if(array_key_exists($_cle, static::$has_and_belongs_to_many)){
-			$id_assoc		= strtolower(preg_replace('#([a-zA-Z]+\\\\)+([a-zA-Z]+)#i','$2',get_called_class())). '_id';
+			$id_assoc		= static::getClassName() . '_id';
 			$id_assoc_2		= static::$has_and_belongs_to_many[$_cle]['primary_key'];
 			$_join_table	= static::$has_and_belongs_to_many[$_cle]['join_table'];
             $class			= static::$has_and_belongs_to_many[$_cle]['class'];
@@ -247,6 +246,8 @@ abstract class MyEnregistrement extends Enregistrement{
     public function __set($_cle /** Nom de la propriete */, $_val /** Sa nouvelle valeur */) {
         if (array_key_exists($_cle, $this->valeurs)) // La propriete demandee est bien une cle du tableau des valeurs
             return $this->valeurs[$_cle] = $_val ;
+		elseif(array_key_exists($_cle, static::$relations_elem))
+			return static::$relations_elem[$_cle] = $_val ;
         throw new \Exception("Attribut '$_cle' inconnu dans '".get_class($this)."'");
     }
 
@@ -254,6 +255,8 @@ abstract class MyEnregistrement extends Enregistrement{
     public function __isset($_cle /** Nom de la propriete */) {
         if (array_key_exists($_cle, $this->valeurs)) // La propriete demandee est bien une cle du tableau des valeurs
             return isset($this->valeurs[$_cle]);
+		elseif(array_key_exists($_cle, static::$relations_elem))
+			isset(static::$relations_elem[$_cle]);
         throw new \Exception("Attribut '$_cle' inconnu dans '".get_class($this)."'");
     }
 
@@ -261,6 +264,8 @@ abstract class MyEnregistrement extends Enregistrement{
     public function __unset($_cle /** Nom de la propriete */) {
         if (array_key_exists($_cle, $this->valeurs))// La propriete demandee est bien une cle du tableau des valeurs
             return $this->valeurs[$_cle] = null;
+		elseif(array_key_exists($_cle, static::$relations_elem))
+			unset(static::$relations_elem[$_cle]);
         throw new \Exception("Attribut '$_cle' inconnu dans '" . get_class($this) . "'");
     }
 }
