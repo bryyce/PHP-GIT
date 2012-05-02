@@ -10,7 +10,15 @@
  */
 namespace ORM;
 class Validation {
-
+	public static function validate($entity, array $validation) {
+		foreach($validation as $test => $values){
+			if($test == 'unique')
+				foreach($values as $value)
+					if($entity::count(array($value =>$entity->$value)))
+						$entity->errors[$value]='not unique';
+		}
+	}
+	
     public static function isNumeric($param) {
         return $param;
     }

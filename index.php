@@ -3,6 +3,8 @@
 print("------------<br>");
 $user = Model\User::first();
 print_r($user->profiles[0]->users[0]);
+$user->save();
+print_r($user);
 echo '<br>';
 $c = new Collection(array(1,2,3,4));
 echo $c->next();

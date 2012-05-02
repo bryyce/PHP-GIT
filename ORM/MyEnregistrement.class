@@ -21,6 +21,9 @@ abstract class MyEnregistrement extends Enregistrement{
     protected static $has_and_belongs_to_many = array();
     protected static $belongs_to = array();
     protected static $relations_elem = array();
+	public $errors = array();
+	
+	protected static $validate = array();
     /**
      * Constructeur d'enregistrement
      *
@@ -135,8 +138,9 @@ abstract class MyEnregistrement extends Enregistrement{
 			WHERE 
 				'.$conditions
         );
+		
         // Execution de la requete avec le parametre et lecture du resultat
-        if ($res->execute() && $enregistrement = $res->fetchAll(\PDO::FETCH_ASSOC))
+        if ($res->execute() && $enregistrement = $res->fetch(\PDO::FETCH_ASSOC))
             return $enregistrement['nb'];
         return 0;
     }
@@ -268,5 +272,10 @@ abstract class MyEnregistrement extends Enregistrement{
 			unset(static::$relations_elem[$_cle]);
         throw new \Exception("Attribut '$_cle' inconnu dans '" . get_class($this) . "'");
     }
+	
+	public function save(){
+		Validation::validate($this, static::$validate);
+		return $this->ecriture();
+	}
 }
 ?>

@@ -23,74 +23,8 @@ class Profile extends ORM\MyEnregistrement
         parent::__construct($_id);
     }
 
-
-    /**
-     *  Va chercher les commentaires liÃƒÂ©e ÃƒÂ  l'article en cours
-     *
-     * @return <Array<Commentaire>>
-     */
-    public function situationMembre() {
-        if ($this->_situation_membre == null) {
-            if ($this->id_situation_joueur != null) {
-                $this->_situation_membre= SituationMembre::AllBy("id = {$this->id_situation_joueur}");
-                $this->_situation_membre= $this->_situation_membre[0] ;
-            }
-            else
-                $this->_situation_membre = new SituationMembre();
-        }
-        return $this->_situation_membre;
-    }
-
-    public function Commandes() {
-        // Preparation de la requete
-        if ($this->_commandes == null) {
-            if ($this->id != null) 
-                $this->_commandes = Commande::AllBy("id_membre = {$this->id}");
-            else
-                $this->_commandes = array();
-        }
-        return $this->_commandes;
-    }
-
-    public function Messages() {
-        // Preparation de la requete
-        if ($this->_messages == null) {
-            if ($this->id != null) 
-                $this->_messages = Message::AllBy("id_membre = {$this->id}");
-            else
-                $this->_messages = array();
-        }
-        return $this->_messages;
-    }
-
-    public function Status() {
-        // Preparation de la requete
-        if ($this->_status == null) {
-            if ($this->id_status != null) {
-                $this->_status = Status::allBy("id = {$this->id_status}");
-                $this->_status = $this->_status[0] ;
-            }
-            else
-                $this->_status = new Status();
-        }
-        return $this->_status;
-    }
-
-    public function Parrain() {
-        // Preparation de la requete
-        if ($this->_parrain == null) {
-            if ($this->id_parrain) {
-                $this->_parrain = Parrain::AllBy("id = {$this->id_parrain}");
-                $this->_parrain= $this->_parrain[0] ;
-            }else
-                $this->_parrain = new Membre();
-        }
-        return $this->_parrain;
-    }
-   
-
     //***********************************//
-    //  Fin Fonctions membres protÃƒÂ©gÃƒÂ©es  //
+    //  Fin Fonctions membres protégées  //
     //***********************************//
     public function validation() {
         $msg = "<ul>";
