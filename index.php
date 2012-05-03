@@ -3,6 +3,7 @@
 print("------------<br>");
 $user = Model\User::first();
 print_r($user->profiles[0]->users[0]);
+$user->id = 0;
 $user->save();
 print_r($user);
 echo '<br>';

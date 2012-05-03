@@ -7,7 +7,7 @@
 
 /**
  * Description of Collection
- *
+ * @package /
  * @author bryyce
  */
 class Collection {

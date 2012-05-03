@@ -124,11 +124,11 @@ abstract class MyEnregistrement extends Enregistrement{
         return $records[0];
     }
 	
-	public static function count($_params = array()){
+	public static function count($_params = array(),$_others = ''){
         $params = array();
         foreach ($_params as $key => $value)
             $params[] = "$key = '$value'";
-		$conditions = implode(' AND ', $params);
+		$conditions = implode(' AND ', $params).' '.$_others;
 		$table = static::table();
         $res = myPDO::get()->prepare('
 			SELECT 
@@ -138,7 +138,6 @@ abstract class MyEnregistrement extends Enregistrement{
 			WHERE 
 				'.$conditions
         );
-		
         // Execution de la requete avec le parametre et lecture du resultat
         if ($res->execute() && $enregistrement = $res->fetch(\PDO::FETCH_ASSOC))
             return $enregistrement['nb'];
@@ -274,7 +273,9 @@ abstract class MyEnregistrement extends Enregistrement{
     }
 	
 	public function save(){
-		Validation::validate($this, static::$validate);
+		Validation::validate($this, static::$validate, static::cle_pri());
+		if(count($this->errors) > 0)
+			return false;
 		return $this->ecriture();
 	}
 }
