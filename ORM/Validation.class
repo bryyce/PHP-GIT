@@ -2,24 +2,25 @@
 /**
  * Description of Validation
  *
- * @category	Class
- * @package		ORM
- * @author		bryyce
- * @license		http://www.gnu.org/copyleft/gpl.html GNU General Public License
- * @link		http://www.bryyce.fr/
+ * @category  Class
+ * @package    ORM
+ * @author    bryyce
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License
+ * @link    http://www.bryyce.fr/
  */
 namespace ORM;
 class Validation {
-	public static function validate($entity, array $validation, $id) {
-		foreach($validation as $test => $values){
-			if($test == 'unique')
-				foreach($values as $value){
-					if($entity::count(array($value =>$entity->$value), 'and '.$id.' != '.$entity->$id))
-						$entity->errors[$value]='not unique';
-				}
-		}
-	}
-	
+  public static function validate($entity, array $validation, $id) {
+    foreach($validation as $test => $values){
+      if($test == 'unique')
+        foreach($values as $value){
+          if($entity::count(array($value =>$entity->$value), 'and '.$id.' != '.$entity->$id))
+            $entity->errors[$value]='not unique';
+        }
+    }
+    return count($entity->errors) > 0;
+  }
+  
     public static function isNumeric($param) {
         return $param;
     }
@@ -39,9 +40,9 @@ class Validation {
     public static function isNotEmpty($param) {
         return $param;
     }
-	
-	public static function isUnique($param){
-		return $param;
-	}
+  
+  public static function isUnique($param){
+    return $param;
+  }
 }
 ?>
