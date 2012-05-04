@@ -10,12 +10,16 @@
  * @package /
  * @author bryyce
  */
-class Collection {
+class Collection implements ArrayAccess {
 	private $collection = array();
 	private $current_index = 0;
 	
 	public function __construct(array $array = array()) {
 		$this->collection = $array;
+	}
+	
+	public function offsetGet( $offset ){
+		return $this->collection[$offset];
 	}
 	
 	public function push($element){
@@ -77,6 +81,18 @@ class Collection {
 	
 	public function __destruct() {
 		unset($this->collection);
+	}
+
+	public function offsetExists($offset) {
+		
+	}
+
+	public function offsetSet($offset, $value) {
+		
+	}
+
+	public function offsetUnset($offset) {
+		
 	}
 }
 ?>
