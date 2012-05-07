@@ -1,6 +1,9 @@
 <?php
 //print_r(Model\Membre::All());
 print("------------<br>");
+$user = Model\User::all();
+print_r($user);
+echo "<br>";
 $user = Model\User::first();
 print_r($user->profiles[0]->users[0]);
 $user->id = 0;

@@ -10,18 +10,14 @@
  * @package /
  * @author bryyce
  */
-class Collection implements ArrayAccess {
+class Collection implements ArrayAccess,  Iterator {
 	private $collection = array();
 	private $current_index = 0;
 	
 	public function __construct(array $array = array()) {
 		$this->collection = $array;
 	}
-	
-	public function offsetGet( $offset ){
-		return $this->collection[$offset];
-	}
-	
+		
 	public function push($element){
 		$this->collection[] = $element;
 	}
@@ -48,12 +44,12 @@ class Collection implements ArrayAccess {
 		else return null;
 	}
 
-	public function next(){
+	/*public function next(){
 		$this->current_index ++;
 		if($this->current_index > $this->count())
 			return null;
 		return $this->collection[$this->current_index - 1];		
-	}
+	}*/
 
 	public function prev(){
 		$this->current_index --;
@@ -83,16 +79,58 @@ class Collection implements ArrayAccess {
 		unset($this->collection);
 	}
 
+	public function offsetGet( $offset ){
+		echo'l';
+		return $this->collection[$offset];
+	}
+	
 	public function offsetExists($offset) {
-		
+		echo'm';
+		return array_key_exists($offset, $this->collection);
 	}
 
 	public function offsetSet($offset, $value) {
-		
+		$this->collection[$offset] = $value;
 	}
 
 	public function offsetUnset($offset) {
+		unset($this->collection[$offset]);
 		
 	}
+
+	public function rewind()
+    {
+        echo "rewinding\n";
+        reset($this->var);
+    }
+  
+    public function current()
+    {
+        $var = current($this->var);
+        echo "current: $var\n";
+        return $var;
+    }
+  
+    public function key() 
+    {
+        $var = key($this->var);
+        echo "key: $var\n";
+        return $var;
+    }
+  
+    public function next() 
+    {
+        $var = next($this->var);
+        echo "next: $var\n";
+        return $var;
+    }
+  
+    public function valid()
+    {
+        $key = key($this->var);
+        $var = ($key !== NULL && $key !== FALSE);
+        echo "valid: $var\n";
+        return $var;
+    }
 }
 ?>

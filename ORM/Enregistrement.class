@@ -116,7 +116,7 @@ SQL
         $res->execute();
         /* }
           else // La cle est-elle definie ? => NON !
-          throw new PDOException("Enregistrement impossible : Aucune clÃƒÂ© dÃƒÂ©finie"); */
+          throw new PDOException("Enregistrement impossible : Aucune clé définie"); */
     }
 
     /// Affichage de l'enregistrement

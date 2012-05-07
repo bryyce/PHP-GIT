@@ -91,17 +91,13 @@ abstract class MyEnregistrement extends Enregistrement {
 	}
 
 	protected static function allBy($cond) {
-		$table = static::table();
-		$res = myPDO::get()->prepare('
-      SELECT *
-      FROM ' . $table . '
-      WHERE ' . $cond
-		);
 		$records = new \Collection();
 		// Execution de la requete avec le parametre et lecture du resultat
-		if ($res->execute() && $enregistrements = $res->fetchAll(\PDO::FETCH_ASSOC))
-			foreach ($enregistrements as $enregistrement)
-				$records->push(new static($enregistrement[static::CLE_PRI]));
+		$res = QueryManager::get()->select(static::table())->where($cond)->execute();
+		echo "<br>";
+		while (($enregistrement = $res->next())){
+			$records->push(new static($enregistrement[static::CLE_PRI]));
+		}
 		return $records;
 	}
 
@@ -114,6 +110,7 @@ abstract class MyEnregistrement extends Enregistrement {
 		foreach ($_params as $key => $value)
 			$params[] = "$key = '$value'";
 		$records = static::allBy(implode(" AND ", $params) . "1=1 ORDER BY id LIMIT 0,1");
+		print_r($records);
 		return $records->first();
 	}
 
