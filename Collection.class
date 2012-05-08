@@ -49,14 +49,14 @@ class Collection implements ArrayAccess,  Iterator {
 		if($this->current_index > $this->count())
 			return null;
 		return $this->collection[$this->current_index - 1];		
-	}*/
+	}
 
 	public function prev(){
 		$this->current_index --;
 		if($this->current_index < 0)
 			return null;
 		return $this->collection[$this->current_index];
-	}
+	}*/
 
 	public function join(array $array){
 		return $this->collection = array_merge($this->collection, $array);
@@ -80,12 +80,10 @@ class Collection implements ArrayAccess,  Iterator {
 	}
 
 	public function offsetGet( $offset ){
-		echo'l';
 		return $this->collection[$offset];
 	}
 	
 	public function offsetExists($offset) {
-		echo'm';
 		return array_key_exists($offset, $this->collection);
 	}
 
@@ -100,37 +98,28 @@ class Collection implements ArrayAccess,  Iterator {
 
 	public function rewind()
     {
-        echo "rewinding\n";
-        reset($this->var);
+        reset($this->collection);
     }
   
     public function current()
     {
-        $var = current($this->var);
-        echo "current: $var\n";
-        return $var;
+        return current($this->collection);
     }
   
     public function key() 
     {
-        $var = key($this->var);
-        echo "key: $var\n";
-        return $var;
+        return key($this->collection);
     }
   
     public function next() 
     {
-        $var = next($this->var);
-        echo "next: $var\n";
-        return $var;
+        return next($this->collection);
     }
   
     public function valid()
     {
-        $key = key($this->var);
-        $var = ($key !== NULL && $key !== FALSE);
-        echo "valid: $var\n";
-        return $var;
+        $key = key($this->collection);
+        return ($key !== NULL && $key !== FALSE);
     }
 }
 ?>

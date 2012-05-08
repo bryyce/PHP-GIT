@@ -90,36 +90,31 @@ abstract class MyEnregistrement extends Enregistrement {
 		return Config::getTable(static::getClassName());
 	}
 
-	protected static function allBy($cond) {
+	protected static function allBy($cond = "") {
 		$records = new \Collection();
 		// Execution de la requete avec le parametre et lecture du resultat
-		$res = QueryManager::get()->select(static::table())->where($cond)->execute();
-		echo "<br>";
-		while (($enregistrement = $res->next())){
-			$records->push(new static($enregistrement[static::CLE_PRI]));
-		}
+		foreach(QueryManager::get()->select(static::table())->where($cond)->execute() as $enregistrement)
+			$records->push(static::load($enregistrement));
 		return $records;
 	}
 
 	public static function all() {
-		return self::allBy("1=1");
+		return self::allBy();
 	}
 
 	public static function first($_params = array()) {
 		$params = array();
 		foreach ($_params as $key => $value)
 			$params[] = "$key = '$value'";
-		$records = static::allBy(implode(" AND ", $params) . "1=1 ORDER BY id LIMIT 0,1");
-		print_r($records);
-		return $records->first();
+		
+		return static::load(QueryManager::get()->select(static::table())->where($params)->order('id')->limit(1)->execute()->first());
 	}
 
 	public static function last($_params = array()) {
 		$params = array();
 		foreach ($_params as $key => $value)
 			$params[] = "$key = '$value'";
-		$records = static::allBy(implode(" AND ", $params) . "1=1 ORDER BY id DESC LIMIT 0,1");
-		return $records->first();
+		return static::load(QueryManager::get()->select(static::table())->where($params)->order('id DESC')->limit(1)->execute()->first());
 	}
 
 	public static function count($_params = array(), $_others = '') {
@@ -161,6 +156,7 @@ abstract class MyEnregistrement extends Enregistrement {
 		foreach ($_params as $key => $value)
 			$params[] = "$key = '$value'";
 		return static::allBy(implode(" AND ", $params));
+	
 	}
 
 	/// Surcharge de __get pour donner acces aux valeurs sous la forme $e->attribut
@@ -247,7 +243,19 @@ abstract class MyEnregistrement extends Enregistrement {
 			unset(static::$relations_elem[$_cle]);
 		throw new \Exception("Attribut '$_cle' inconnu dans '" . get_class($this) . "'");
 	}
-
+	
+	
+	public static function load($attributes){
+		$class = get_called_class();
+		$record = new $class();
+		$record->setAttributes($attributes);
+		return $record;
+	}
+	public function setAttributes(array $attributes){
+		foreach($attributes as $attribute => $value)
+			$this->$attribute = $value;
+	}
+	
 	public function save() {
 		if (Validation::validate($this, static::$validate, static::cle_pri()))
 			return false;

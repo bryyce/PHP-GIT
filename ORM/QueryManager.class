@@ -48,20 +48,23 @@ class QueryManager {
 	}
 
 	public function order($columns) {
+		if (!is_array($columns))
+			$columns = array($columns);
 		$this->order = 'ORDER BY ' . join(', ', $columns);
 		return $this;
 	}
 
 	public function where($conditions) {
-		if (is_array($conditions))
-			$this->where = 'WHERE ' . join(' AND ', $conditions);
+		if (is_array($conditions)){
+			if(count($conditions) > 0)
+				$this->where = 'WHERE ' . join(' AND ', $conditions);
+		}
 		else if ($conditions != '')
 			$this->where = 'WHERE ' . $conditions;
-
 		return $this;
 	}
 
-	public function limit($number, $offset) {
+	public function limit($number, $offset = 0) {
 		$this->limit = 'LIMIT ' . $offset . ', ' . $number;
 		return $this;
 	}
