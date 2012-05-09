@@ -12,33 +12,41 @@ namespace ORM;
 class Validation {
   public static function validate($entity, array $validation, $id) {
     foreach($validation as $test => $values){
-      if($test == 'unique')
-        foreach($values as $value){
+      switch($test)
+        case 'unique': 
+         foreach($values as $value)
           if($entity::count(array($value =>$entity->$value), 'and '.$id.' != '.$entity->$id))
             $entity->errors[$value]='not unique';
-        }
+        case 'presence':
+         foreach($values as $value)
+           if(self::isEmpty($entity->$value))
+            $entity->errors[$value]='is empty';
+        case 'numericality':
+         foreach($values as $value)
+           if(!self::isNumeric($entity->$value))
+            $entity->errors[$value]='is not numeric';
+        case 'length':
+         foreach($values as $value)
+           if(!self::isNumeric($entity->$value))
+            $entity->errors[$value]='is not numeric';
     }
     return count($entity->errors) > 0;
   }
   
     public static function isNumeric($param) {
-        return $param;
+        return preg_match("#^-?\d+.?\d+$#", $param);
     }
 
     public static function isInteger($param) {
-        return $param;
-    }
-
-    public static function isString($param) {
-        return $param;
+        return preg_match("#^-?\d+$#", $param);
     }
 
     public static function isMail($param) {
         return $param;
     }
 
-    public static function isNotEmpty($param) {
-        return $param;
+    public static function isEmpty($param) {
+        return $param === null || $param === "";
     }
   
   public static function isUnique($param){

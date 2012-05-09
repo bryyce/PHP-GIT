@@ -6,7 +6,7 @@
  * @package     ORM
  * @author      bryyce
  * @license     http://www.gnu.org/copyleft/gpl.html GNU General Public License
- * @link		http://www.bryyce.fr/
+ * @link    http://www.bryyce.fr/
  */
 namespace ORM;
 require_once 'Connexion.inc.php' ;
@@ -29,12 +29,18 @@ abstract class Enregistrement
     FROM {$this->table()}
     WHERE {$this->cle_pri()} = ?
 SQL
-   	);
+     );
+       $records = QueryManager::get()->
+        select($this->table())->
+        where($this->cle_pri()." = ". $_id)->
+        execute();
         // Execution de la requete avec le parametre et lecture du resultat
-        if ($res->execute(array($_id)) && $enregistrement = $res->fetch(\PDO::FETCH_ASSOC)) {
+      /*if ($res->execute(array($_id)) && $enregistrement = $res->fetch(\PDO::FETCH_ASSOC)) {
            // Affectation des valeurs
            $this->chargement($enregistrement);
-        }
+    }*/
+        if ( $records->count() != 1 )
+          $this->chargement($records->first());
         else {
             // Lecture impossible
             throw new \Exception("Lecture de l'enregistrement {$_id} impossible");
