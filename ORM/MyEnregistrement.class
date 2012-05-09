@@ -78,6 +78,11 @@ abstract class MyEnregistrement extends Enregistrement {
 	protected static function cle_pri() {
 		return static::CLE_PRI;
 	}
+	
+	protected function get_primary_key_value(){
+		$id = static::cle_pri();
+		return $this->$id;
+	}
 
 	protected static function getClassName() {
 		return strtolower(preg_replace('#([a-zA-Z]+\\\\)+([a-zA-Z]+)#i', '$2', get_called_class()));
@@ -106,7 +111,6 @@ abstract class MyEnregistrement extends Enregistrement {
 		$params = array();
 		foreach ($_params as $key => $value)
 			$params[] = "$key = '$value'";
-		
 		return static::load(QueryManager::get()->select(static::table())->where($params)->order('id')->limit(1)->execute()->first());
 	}
 
@@ -188,18 +192,16 @@ abstract class MyEnregistrement extends Enregistrement {
 			$class = static::$has_and_belongs_to_many[$_cle]['class'];
 			if (!array_key_exists($_cle, static::$relations_elem) || static::$relations_elem[$_cle] == null) {
 				static::$relations_elem[$_cle] = new \Collection();
-				if ($this->id) {
-					$res = myPDO::get()->prepare('
-              SELECT *
-              FROM ' . $class::table() . '
-              INNER JOIN ' . $_join_table . '
-              ON ' . $_join_table . '.' . $id_assoc_2 . ' = ' . $class::table() . '.' . $class::cle_pri() . '
-              WHERE ' . $_join_table . '.' . $id_assoc . ' = ' . $this->id
-					);
+				if ($this->get_primary_key_value()) {					
 					// Execution de la requete avec le parametre et lecture du resultat
-					if ($res->execute() && $enregistrements = $res->fetchAll(\PDO::FETCH_ASSOC)) 
-						foreach ($enregistrements as $enregistrement)
-							static::$relations_elem[$_cle]->push(new $class($enregistrement[$class::CLE_PRI]));
+					$enregistrements = 
+						QueryManager::get()->
+							select($class::table())->
+							join($_join_table,array($id_assoc_2,static::cle_pri()))->
+							where($_join_table . '.' . $id_assoc . ' = ' . $this->get_primary_key_value())
+							->execute();
+					foreach ($enregistrements as $enregistrement)
+						static::$relations_elem[$_cle]->push($class::load($enregistrement));
 				}
 			}
 		} else if (array_key_exists($_cle, static::$belongs_to)) {
@@ -207,9 +209,8 @@ abstract class MyEnregistrement extends Enregistrement {
 			$class = static::$belongs_to[$_cle]['class'];
 			if (!array_key_exists($_cle, static::$relations_elem) || static::$relations_elem[$_cle] == null) {
 				static::$relations_elem[$_cle] = new $class;
-				$p_k = static::cle_pri();
-				if ($this->$p_k)
-					static::$relations_elem[$_cle] = $class::first("$id_assoc = {$this->$p_k}");
+				if ($this->get_primary_key_value())
+					static::$relations_elem[$_cle] = $class::first("$id_assoc = {$this->get_primary_key_value()}");
 			}
 		}
 		else

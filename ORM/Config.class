@@ -28,7 +28,7 @@ class Config {
             'profiles' =>
                 array('id' => 'id', 
 					'name' => 'nom', 
-					'first_name' => 'prenom', 
+					'firstname' => 'prenom', 
 					'address' => 'adresse', 
 					'last_login' => 'dernière connexion')
         );

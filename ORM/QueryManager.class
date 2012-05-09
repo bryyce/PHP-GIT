@@ -36,14 +36,27 @@ class QueryManager {
 	}
 
 	public function select($table, $columns = array()) {
-		$this->select = 'SELECT ' . (count($columns) == 0 ? '*' : join(', ', $columns)) . ' FROM ' . $table;
+		$this->select = 'SELECT '.$table. '.' . (count($columns) == 0 ? '*' : join(', '.$table. '.', $columns)) . ' FROM ' . $table;
 		$this->table = $table;
 		return $this;
 	}
 
-	public function join($table) {
-		$id_join = $this->table . '_id';
-		$this->join [] = 'INNER JOIN ' . $table . ' ON ' . $table . '.' . $id_join . ' = ' . $this->table . '.' . $id_join;
+	public function join($tables = array(), array $foreign_keys = array()) {
+		$table_2 = $this->table;
+		if(!is_array($tables))
+			$table = $tables;
+		else{
+			if(array_key_exists(0, $tables))
+				$table = $tables[0];
+			if(array_key_exists(1, $tables))
+				$table_2 = $tables[1];
+		}
+		$id_join_1 = $id_join_2 = $this->table . '_id';
+		if(array_key_exists(0, $foreign_keys))
+			$id_join_1 = $foreign_keys[0];
+		if(array_key_exists(1, $foreign_keys))
+			$id_join_2 = $foreign_keys[1];
+		$this->join [] = 'INNER JOIN ' . $table . ' ON ' . $table . '.' . $id_join_1 . ' = ' . $table_2 . '.' . $id_join_2;
 		return $this;
 	}
 
@@ -94,6 +107,7 @@ class QueryManager {
 		$enregistrements = new \Collection();
 		if ($query->execute())
 			$enregistrements->join($query->fetchAll(\PDO::FETCH_ASSOC));
+		$this->reset();
 		return $enregistrements;
 	}
 
