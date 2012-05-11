@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Description of Validation
  *
@@ -8,41 +9,59 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License
  * @link    http://www.bryyce.fr/
  */
+
 namespace ORM;
+
 class Validation {
-  public static function validate($entity, array $validation, $id) {
-    foreach($validation as $test => $values){
-      if($test == 'unique')
-        foreach($values as $value){
-          if($entity::count(array($value =>$entity->$value), 'and '.$id.' != '.$entity->$id))
-            $entity->errors[$value]='not unique';
-        }
-    }
-    return count($entity->errors) > 0;
-  }
-  
-    public static function isNumeric($param) {
-        return $param;
-    }
 
-    public static function isInteger($param) {
-        return $param;
-    }
+	public static function validate($entity, array $validation, $id) {
+		foreach ($validation as $test => $values) {
+			switch ($test) {
+				case 'unique':
+					foreach ($values as $value)
+						if ($entity::count(array($value => $entity->$value), 'and ' . $id . ' != ' . $entity->$id))
+							$entity->errors[$value] = 'not unique';
+					break;
+				case 'presence':
+					foreach ($values as $value)
+						if (self::isEmpty($entity->$value))
+							$entity->errors[$value] = 'is empty';
+					break;
+				case 'numericality':
+					foreach ($values as $value)
+						if (!self::isNumeric($entity->$value))
+							$entity->errors[$value] = 'is not numeric';
+					break;
+				case 'length':
+					foreach ($values as $value)
+						if (!self::isNumeric($entity->$value))
+							$entity->errors[$value] = 'is not numeric';
+					break;
+			}
+		}
+		return count($entity->errors) > 0;
+	}
 
-    public static function isString($param) {
-        return $param;
-    }
+	public static function isNumeric($param) {
+		return preg_match("#^-?\d+.?\d+$#", $param);
+	}
 
-    public static function isMail($param) {
-        return $param;
-    }
+	public static function isInteger($param) {
+		return preg_match("#^-?\d+$#", $param);
+	}
 
-    public static function isNotEmpty($param) {
-        return $param;
-    }
-  
-  public static function isUnique($param){
-    return $param;
-  }
+	public static function isMail($param) {
+		return $param;
+	}
+
+	public static function isEmpty($param) {
+		return $param === null || $param === "";
+	}
+
+	public static function isUnique($param) {
+		return $param;
+	}
+
 }
+
 ?>

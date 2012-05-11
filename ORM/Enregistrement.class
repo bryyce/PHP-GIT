@@ -13,8 +13,8 @@ require_once 'Connexion.inc.php' ;
 /**
  *  Modele abstrait d'enregistrement
  */
-abstract class Enregistrement
-{
+abstract class Enregistrement {
+
     /// Valeurs de l'enregistrement :
     /// tableau associatif de la forme nom_du_champ => valeur_pour_l_enregistrement
     protected $valeurs = array();
@@ -23,23 +23,19 @@ abstract class Enregistrement
 
     public function lecture($_id /** Identifiant */) {
         // Preparation de la requete
-        $res = myPDO::get()->prepare(
-<<<SQL
-    SELECT *
-    FROM {$this->table()}
-    WHERE {$this->cle_pri()} = ?
-SQL
-   	);
+
+		$records = QueryManager::get()->
+				select($this->table())->
+				where($this->cle_pri() . " = " . $_id)->
+				execute();
+
         // Execution de la requete avec le parametre et lecture du resultat
-        if ($res->execute(array($_id)) && $enregistrement = $res->fetch(\PDO::FETCH_ASSOC)) {
-           // Affectation des valeurs
-           $this->chargement($enregistrement);
-        }
-        else {
-            // Lecture impossible
+		if ($records->count() == 1)
+			$this->chargement($records->first());
+		else// Lecture impossible
             throw new \Exception("Lecture de l'enregistrement {$_id} impossible");
         }
-    }
+
     /// Donne le nom de la table contenant les informations
     abstract protected static function table();
 
@@ -120,24 +116,20 @@ SQL
     }
 
     /// Affichage de l'enregistrement
-    public function affichage($_deb=''       /** Texte a placer avant chaque libelle */,
-            $_mil=' : '    /** Texte a placer entre le libelle et la valeur */,
-            $_fin="<br>\n" /** Texte a placer apres la valeur */
+	public function affichage($_deb = '' /** Texte a placer avant chaque libelle */, $_mil = ' : ' /** Texte a placer entre le libelle et la valeur */, $_fin = "<br>\n" /** Texte a placer apres la valeur */
             ) {
         foreach ($this->etiquettes() as $cle => $etiquette) {
-            echo "{$_deb}$etiquette{$_mil}{$this->$cle}{$_fin}" ;
+			echo "{$_deb}$etiquette{$_mil}{$this->$cle}{$_fin}";
         }
     }
 
 /// Production des elements de formulaire de l'enregistrement
-    public function formulaire($_deb=''       /** Texte a placer avant chaque libelle */,
-            $_mil=' : '    /** Texte a placer entre le libelle et la valeur */,
-            $_fin="<br>\n" /** Texte a placer apres la valeur */
+	public function formulaire($_deb = '' /** Texte a placer avant chaque libelle */, $_mil = ' : ' /** Texte a placer entre le libelle et la valeur */, $_fin = "<br>\n" /** Texte a placer apres la valeur */
             ) {
         foreach ($this->etiquettes() as $cle => $etiquette) {
             $valeur = htmlentities($this->$cle);
-            if($cle!=$this->cle_pri())
-                echo "{$_deb}$etiquette{$_mil}<input type='text' name='$cle' value=\"{$valeur}\">{$_fin}" ;
+			if ($cle != $this->cle_pri())
+				echo "{$_deb}$etiquette{$_mil}<input type='text' name='$cle' value=\"{$valeur}\">{$_fin}";
         }
     }
 
@@ -146,7 +138,7 @@ SQL
         // Pour chaque attribut, affecter la valeur si elle est presente dans le tableau
         foreach (array_keys($this->valeurs) as $k) 
             if (array_key_exists($k, $_donnees)) 
-                $this->$k = $_donnees[$k] ;
+				$this->$k = $_donnees[$k];
     }
 
     /// Initialisation des noms des attributs qui sont les cles du tableau des valeurs
@@ -155,7 +147,7 @@ SQL
         $this->valeurs = array();
         // Pour chaque cle passee en parametre...
         foreach (array_keys($_cles) as $cle) // ...en faire une cle du tableau des valeurs
-            $this->valeurs[$cle] = null ;
+			$this->valeurs[$cle] = null;
     }
 
 }

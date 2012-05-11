@@ -34,7 +34,7 @@ abstract class MyEnregistrement extends Enregistrement {
 	 */
 	public function __construct($_id = null) {
 		$this->initAttributs(self::etiquettes());
-		if ($_id != null) 
+		if ($_id != null)
 			$this->lecture($_id);
 	}
 
@@ -78,8 +78,8 @@ abstract class MyEnregistrement extends Enregistrement {
 	protected static function cle_pri() {
 		return static::CLE_PRI;
 	}
-	
-	protected function get_primary_key_value(){
+
+	protected function get_primary_key_value() {
 		$id = static::cle_pri();
 		return $this->$id;
 	}
@@ -98,7 +98,7 @@ abstract class MyEnregistrement extends Enregistrement {
 	protected static function allBy($cond = "") {
 		$records = new \Collection();
 		// Execution de la requete avec le parametre et lecture du resultat
-		foreach(QueryManager::get()->select(static::table())->where($cond)->execute() as $enregistrement)
+		foreach (QueryManager::get()->select(static::table())->where($cond)->execute() as $enregistrement)
 			$records->push(static::load($enregistrement));
 		return $records;
 	}
@@ -126,18 +126,12 @@ abstract class MyEnregistrement extends Enregistrement {
 		foreach ($_params as $key => $value)
 			$params[] = "$key = '$value'";
 		$conditions = implode(' AND ', $params) . ' ' . $_others;
-		$table = static::table();
-		$res = myPDO::get()->prepare('
-        SELECT 
-            COUNT(*) as nb
-        FROM 
-            ' . $table . '
-        WHERE 
-            ' . $conditions
-		);
+		$res = QueryManager::get()->select(static::table())->where($conditions)->count()->execute();
 		// Execution de la requete avec le parametre et lecture du resultat
-		if ($res->execute() && $enregistrement = $res->fetch(\PDO::FETCH_ASSOC))
-			return $enregistrement['nb'];
+		if ($res->count() > 0) {
+			$result = $res->first();
+			return $result['count'];
+		}
 		return 0;
 	}
 
@@ -160,7 +154,6 @@ abstract class MyEnregistrement extends Enregistrement {
 		foreach ($_params as $key => $value)
 			$params[] = "$key = '$value'";
 		return static::allBy(implode(" AND ", $params));
-	
 	}
 
 	/// Surcharge de __get pour donner acces aux valeurs sous la forme $e->attribut
@@ -192,12 +185,12 @@ abstract class MyEnregistrement extends Enregistrement {
 			$class = static::$has_and_belongs_to_many[$_cle]['class'];
 			if (!array_key_exists($_cle, static::$relations_elem) || static::$relations_elem[$_cle] == null) {
 				static::$relations_elem[$_cle] = new \Collection();
-				if ($this->get_primary_key_value()) {					
+				if ($this->get_primary_key_value()) {
 					// Execution de la requete avec le parametre et lecture du resultat
-					$enregistrements = 
-						QueryManager::get()->
+					$enregistrements =
+							QueryManager::get()->
 							select($class::table())->
-							join($_join_table,array($id_assoc_2,static::cle_pri()))->
+							join($_join_table, array($id_assoc_2, static::cle_pri()))->
 							where($_join_table . '.' . $id_assoc . ' = ' . $this->get_primary_key_value())
 							->execute();
 					foreach ($enregistrements as $enregistrement)
@@ -244,19 +237,14 @@ abstract class MyEnregistrement extends Enregistrement {
 			unset(static::$relations_elem[$_cle]);
 		throw new \Exception("Attribut '$_cle' inconnu dans '" . get_class($this) . "'");
 	}
-	
-	
-	public static function load($attributes){
+
+	public static function load($attributes) {
 		$class = get_called_class();
 		$record = new $class();
-		$record->setAttributes($attributes);
+		$record->chargement($attributes);
 		return $record;
 	}
-	public function setAttributes(array $attributes){
-		foreach($attributes as $attribute => $value)
-			$this->$attribute = $value;
-	}
-	
+
 	public function save() {
 		if (Validation::validate($this, static::$validate, static::cle_pri()))
 			return false;
