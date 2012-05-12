@@ -17,15 +17,15 @@ namespace ORM;
 
 abstract class MyEnregistrement extends Enregistrement {
 
-	const CLE_PRI = "id";
+  const CLE_PRI = "id";
 
-	protected static $has_one = array();
-	protected static $has_many = array();
-	protected static $has_and_belongs_to_many = array();
-	protected static $belongs_to = array();
-	protected static $relations_elem = array();
-	public $errors = array();
-	protected static $validate = array();
+  protected static $has_one = array();
+  protected static $has_many = array();
+  protected static $has_and_belongs_to_many = array();
+  protected static $belongs_to = array();
+  protected static $relations_elem = array();
+  public $errors = array();
+  protected static $validate = array();
 
 	/**
 	 * Constructeur d'enregistrement
@@ -38,46 +38,46 @@ abstract class MyEnregistrement extends Enregistrement {
 			$this->lecture($_id);
 	}
 
-	public static function loadRelations() {
-		foreach (static::$has_one as $k => $v) {
-			if (!array_key_exists('primary_key', static::$has_one[$k]))
-				static::$has_one[$k]['primary_key'] = $k . '_id';
-			if (!array_key_exists('class', static::$has_one[$k]))
-				static::$has_one[$k]['class'] = 'Model\\' . ucfirst($k);
-		}
-		foreach (static::$has_many as $k => $v) {
-			if (!array_key_exists('primary_key', static::$has_many[$k]))
-				static::$has_many[$k]['primary_key'] = $k . '_id';
-			if (!array_key_exists('class', static::$has_many[$k]))
-				static::$has_many[$k]['class'] = 'Model\\' . ucfirst($k);
-		}
-		foreach (static::$has_and_belongs_to_many as $k => $v) {
-			$class = 'Model\\' . ucfirst(substr($k, 0, strlen($k) - 1));
-			if (!array_key_exists('primary_key', static::$has_and_belongs_to_many[$k]))
-				static::$has_and_belongs_to_many[$k]['primary_key'] = substr($k, 0, strlen($k) - 1) . '_id';
-			if (!array_key_exists('class', static::$has_and_belongs_to_many[$k]))
-				static::$has_and_belongs_to_many[$k]['class'] = $class;
-			if (array_key_exists('master', static::$has_and_belongs_to_many[$k]) && static::$has_and_belongs_to_many[$k]['master'] == false)
-				static::$has_and_belongs_to_many[$k]['join_table'] = $class::table() . '_' . static::table();
-			else
-				static::$has_and_belongs_to_many[$k]['join_table'] = static::table() . '_' . $class::table();
-		}
-		foreach (static::$belongs_to as $k => $v) {
-			if (!array_key_exists('primary_key', static::$belongs_to[$k]))
-				static::$belongs_to[$k]['primary_key'] = static::table() . '_id';
-			if (!array_key_exists('class', static::$belongs_to[$k]))
-				static::$belongs_to[$k]['class'] = 'Model\\' . ucfirst($k);
-		}
-	}
+  public static function loadRelations() {
+    foreach (static::$has_one as $k => $v) {
+      if (!array_key_exists('primary_key', static::$has_one[$k]))
+        static::$has_one[$k]['primary_key'] = $k . '_id';
+      if (!array_key_exists('class', static::$has_one[$k]))
+        static::$has_one[$k]['class'] = 'Model\\' . ucfirst($k);
+    }
+    foreach (static::$has_many as $k => $v) {
+      if (!array_key_exists('primary_key', static::$has_many[$k]))
+        static::$has_many[$k]['primary_key'] = $k . '_id';
+      if (!array_key_exists('class', static::$has_many[$k]))
+        static::$has_many[$k]['class'] = 'Model\\' . ucfirst($k);
+    }
+    foreach (static::$has_and_belongs_to_many as $k => $v) {
+      $class = 'Model\\' . ucfirst(substr($k, 0, strlen($k) - 1));
+      if (!array_key_exists('primary_key', static::$has_and_belongs_to_many[$k]))
+        static::$has_and_belongs_to_many[$k]['primary_key'] = substr($k, 0, strlen($k) - 1) . '_id';
+      if (!array_key_exists('class', static::$has_and_belongs_to_many[$k]))
+        static::$has_and_belongs_to_many[$k]['class'] = $class;
+      if (array_key_exists('master', static::$has_and_belongs_to_many[$k]) && static::$has_and_belongs_to_many[$k]['master'] == false)
+        static::$has_and_belongs_to_many[$k]['join_table'] = $class::table() . '_' . static::table();
+      else
+        static::$has_and_belongs_to_many[$k]['join_table'] = static::table() . '_' . $class::table();
+    }
+    foreach (static::$belongs_to as $k => $v) {
+      if (!array_key_exists('primary_key', static::$belongs_to[$k]))
+        static::$belongs_to[$k]['primary_key'] = static::table() . '_id';
+      if (!array_key_exists('class', static::$belongs_to[$k]))
+        static::$belongs_to[$k]['class'] = 'Model\\' . ucfirst($k);
+    }
+  }
 
-	public function etiquettes() {
-		return Config::getFields(static::table());
-	}
+  public function etiquettes() {
+    return Config::getFields(static::table());
+  }
 
-	//  Donne la cle primaire de la table.
-	protected static function cle_pri() {
-		return static::CLE_PRI;
-	}
+  //  Donne la cle primaire de la table.
+  protected static function cle_pri() {
+    return static::CLE_PRI;
+  }
 
 	protected function get_primary_key_value() {
 		$id = static::cle_pri();
@@ -88,12 +88,12 @@ abstract class MyEnregistrement extends Enregistrement {
 		return strtolower(preg_replace('#([a-zA-Z]+\\\\)+([a-zA-Z]+)#i', '$2', get_called_class()));
 	}
 
-	/*	 * php 5.3 seulement* */
+  /*   * php 5.3 seulement* */
 
-	//  Donne la table contenant les Departement.
-	protected static function table() {
-		return Config::getTable(static::getClassName());
-	}
+  //  Donne la table contenant les Departement.
+  protected static function table() {
+    return Config::getTable(static::getClassName());
+  }
 
 	protected static function allBy($cond = "") {
 		$records = new \Collection();
@@ -103,9 +103,9 @@ abstract class MyEnregistrement extends Enregistrement {
 		return $records;
 	}
 
-	public static function all() {
-		return self::allBy();
-	}
+  public static function all() {
+    return self::allBy();
+  }
 
 	public static function first($_params = array()) {
 		$params = array();
@@ -114,12 +114,12 @@ abstract class MyEnregistrement extends Enregistrement {
 		return static::load(QueryManager::get()->select(static::table())->where($params)->order('id')->limit(1)->execute()->first());
 	}
 
-	public static function last($_params = array()) {
-		$params = array();
-		foreach ($_params as $key => $value)
-			$params[] = "$key = '$value'";
-		return static::load(QueryManager::get()->select(static::table())->where($params)->order('id DESC')->limit(1)->execute()->first());
-	}
+  public static function last($_params = array()) {
+    $params = array();
+    foreach ($_params as $key => $value)
+      $params[] = "$key = '$value'";
+    return static::load(QueryManager::get()->select(static::table())->where($params)->order('id DESC')->limit(1)->execute()->first());
+  }
 
 	public static function count($_params = array(), $_others = '') {
 		$params = array();
@@ -135,19 +135,19 @@ abstract class MyEnregistrement extends Enregistrement {
 		return 0;
 	}
 
-	public static function __callStatic($method, $params) {
-		if (!preg_match('/^(find|first|last|count)By(\w+)$/', $method, $matches)) {
-			throw new \Exception("Call to undefined method {$method}");
-		}
+  public static function __callStatic($method, $params) {
+    if (!preg_match('/^(find|first|last|count)By(\w+)$/', $method, $matches)) {
+      throw new \Exception("Call to undefined method {$method}");
+    }
 
-		$criteriaKeys = explode('_And_', preg_replace('/([a-z0-9])([A-Z])/', '$1_$2', $matches[2]));
-		$criteriaKeys = array_map('strtolower', $criteriaKeys);
-		$criteriaValues = array_slice($params, 0, count($criteriaKeys));
-		$criteria = array_combine($criteriaKeys, $criteriaValues);
+    $criteriaKeys = explode('_And_', preg_replace('/([a-z0-9])([A-Z])/', '$1_$2', $matches[2]));
+    $criteriaKeys = array_map('strtolower', $criteriaKeys);
+    $criteriaValues = array_slice($params, 0, count($criteriaKeys));
+    $criteria = array_combine($criteriaKeys, $criteriaValues);
 
-		$method = $matches[1];
-		return static::$method($criteria);
-	}
+    $method = $matches[1];
+    return static::$method($criteria);
+  }
 
 	public static function find($_params) {
 		$params = array();
@@ -211,23 +211,23 @@ abstract class MyEnregistrement extends Enregistrement {
 		return static::$relations_elem[$_cle];
 	}
 
-	/// Surcharge de __set pour donner acces aux valeurs sous la forme $e->attribut=val
-	public function __set($_cle /** Nom de la propriete */, $_val /** Sa nouvelle valeur */) {
-		if (array_key_exists($_cle, $this->valeurs)) // La propriete demandee est bien une cle du tableau des valeurs
-			return $this->valeurs[$_cle] = $_val;
-		elseif (array_key_exists($_cle, static::$relations_elem))
-			return static::$relations_elem[$_cle] = $_val;
-		throw new \Exception("Attribut '$_cle' inconnu dans '" . get_class($this) . "'");
-	}
+  /// Surcharge de __set pour donner acces aux valeurs sous la forme $e->attribut=val
+  public function __set($_cle /** Nom de la propriete */, $_val /** Sa nouvelle valeur */) {
+    if (array_key_exists($_cle, $this->valeurs)) // La propriete demandee est bien une cle du tableau des valeurs
+      return $this->valeurs[$_cle] = $_val;
+    elseif (array_key_exists($_cle, static::$relations_elem))
+      return static::$relations_elem[$_cle] = $_val;
+    throw new \Exception("Attribut '$_cle' inconnu dans '" . get_class($this) . "'");
+  }
 
-	/// Surcharge de __isset pour donner acces aux valeurs sous la forme isset($e->attribut)
-	public function __isset($_cle /** Nom de la propriete */) {
-		if (array_key_exists($_cle, $this->valeurs)) // La propriete demandee est bien une cle du tableau des valeurs
-			return isset($this->valeurs[$_cle]);
-		elseif (array_key_exists($_cle, static::$relations_elem))
-			isset(static::$relations_elem[$_cle]);
-		throw new \Exception("Attribut '$_cle' inconnu dans '" . get_class($this) . "'");
-	}
+  /// Surcharge de __isset pour donner acces aux valeurs sous la forme isset($e->attribut)
+  public function __isset($_cle /** Nom de la propriete */) {
+    if (array_key_exists($_cle, $this->valeurs)) // La propriete demandee est bien une cle du tableau des valeurs
+      return isset($this->valeurs[$_cle]);
+    elseif (array_key_exists($_cle, static::$relations_elem))
+      isset(static::$relations_elem[$_cle]);
+    throw new \Exception("Attribut '$_cle' inconnu dans '" . get_class($this) . "'");
+  }
 
 	/// Surcharge de __unset pour donner acces aux valeurs sous la forme unset($e->attribut)
 	public function __unset($_cle /** Nom de la propriete */) {
