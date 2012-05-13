@@ -90,10 +90,11 @@ class QueryManager {
 	public function reset() {
 		$this->select = $this->where = $this->order = $this->limit = null;
 		$this->join = array();
+		$this->count = false;
 	}
 
 	public function expectedQuery() {
-		return ($this->count ? 'SELECT COUNT('.$this->table.'.*) FROM '.$this->table : $this->select ) . ' ' .
+		return ($this->count ? 'SELECT COUNT(*) as count FROM '.$this->table : $this->select ) . ' ' .
 				join(' ', $this->join) . ' ' .
 				$this->where . ' ' .
 				$this->order . ' ' .

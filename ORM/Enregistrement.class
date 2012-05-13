@@ -17,6 +17,7 @@ abstract class Enregistrement {
 
     /// Valeurs de l'enregistrement :
     /// tableau associatif de la forme nom_du_champ => valeur_pour_l_enregistrement
+	
     protected $valeurs = array();
     /// Constructeur
     abstract public function __construct($_id=null /** Identifiant */);
@@ -61,16 +62,8 @@ abstract class Enregistrement {
         // 0 => n'existe pas
         // 1  => existe
         // >1 => ne peut pas arriver pour une cle primaire
-        $existe = myPDO::get()->prepare(
-<<<SQL
-    SELECT COUNT(*) "n"
-    FROM $_table
-    WHERE $_cle_pri=?
-SQL
-        );
-        $existe->execute(array($this->$_cle_pri));
-        $nb = $existe->fetch();
-        if ($nb['n'] == 1) {
+        
+        if (static::count(array(static::cle_pri() => $this->$_cle_pri)) == 1) {
             // l'Enregistrement existe => UPDATE
             // Constitution de la requete
             // Pour chaque attribut...

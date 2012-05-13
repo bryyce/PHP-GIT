@@ -21,18 +21,22 @@ class Validation {
 					foreach ($values as $value)
 						if ($entity::count(array($value => $entity->$value), 'and ' . $id . ' != ' . $entity->$id))
 							$entity->errors[$value] = 'not unique';
+					break;
 				case 'presence':
 					foreach ($values as $value)
 						if (self::isEmpty($entity->$value))
 							$entity->errors[$value] = 'is empty';
+					break;
 				case 'numericality':
 					foreach ($values as $value)
 						if (!self::isNumeric($entity->$value))
 							$entity->errors[$value] = 'is not numeric';
+					break;
 				case 'length':
 					foreach ($values as $value)
 						if (!self::isNumeric($entity->$value))
 							$entity->errors[$value] = 'is not numeric';
+					break;
 			}
 		}
 		return count($entity->errors) > 0;
@@ -40,10 +44,6 @@ class Validation {
 
 	public static function isNumeric($param) {
 		return preg_match("#^-?\d+.?\d+$#", $param);
-	}
-
-	public static function isInteger($param) {
-		return preg_match("#^-?\d+$#", $param);
 	}
 
 	public static function isInteger($param) {
