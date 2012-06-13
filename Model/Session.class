@@ -2,34 +2,34 @@
 /**
  * Session Class Doc Comment
  *
- * @category	Class
- * @package		Model
- * @author		bryyce
- * @license		http://www.gnu.org/copyleft/gpl.html GNU General Public License
- * @link		http://www.bryyce.fr/
+ * @category  Class
+ * @package    Model
+ * @author    bryyce
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License
+ * @link    http://www.bryyce.fr/
  */
 namespace Model;
 class Session
 {
     private static $_user;
-    public static function CreateSession()
+    public static function createSession()
     {
-		session_start();
-		if(!isset($_SESSION['id'])) {
-			session_destroy();
-			return false;
-		}
-                Session::$_user=new User($_SESSION['id']);
-		return true;
+        session_start();
+        if(!isset($_SESSION['id'])) {
+            session_destroy();
+            return false;
+        }
+        Session::$_user = new User($_SESSION['id']);
+        return true;
     }
-    public static function CreateSessionOrDie($page){
-        if(!self::CreateSession()){
+    public static function createSessionOrDie($page){
+        if(!self::createSession()){
             header('Location: /'.$page);
             exit;
         }
     }
-    public static function CreateAdminSessionOrDie($page){
-        if(!self::CreateSession() || !Session::isAdmin()){
+    public static function createAdminSessionOrDie($page){
+        if(!self::createSession() || !Session::isAdmin()){
             header('Location: /'.$page);
             exit;
         }
@@ -39,6 +39,17 @@ class Session
     }
     public static function currentUser(){
         return Session::$_user;
+    }
+  
+    public static function authenticate($login, $password){
+        $user = User::findByLogin($login);
+        if($user->password == $user->encrypt($password)){
+            session_start();
+            $_SESSION['id'] = $user->id;
+            Session::$_user = new User($_SESSION['id']);
+            return true;
+        }
+        return false;
     }
 }
 ?>
