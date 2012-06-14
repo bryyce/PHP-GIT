@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php
 
 /*
@@ -111,3 +112,137 @@ class QueryManager {
 }
 
 ?>
+=======
+<?php
+
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+
+/**
+ * 
+ * Description of QueryManager
+ *
+ * @category    Class
+ * @package     ORM
+ * @author      bryyce
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU General Public License
+ * @link        http://www.bryyce.fr/
+ */
+
+namespace ORM;
+
+class QueryManager {
+
+	//put your code here
+	private static $instance;
+	private $select;
+	private $join = array();
+	private $order;
+	private $where;
+	private $limit;
+	private $count;
+	private $table;
+
+	public function __construct() {
+		
+	}
+
+	public function select($table, $columns = array()) {
+		$this->select = 'SELECT '.$table. '.' . (count($columns) == 0 ? '*' : join(', '.$table. '.', $columns)) . ' FROM ' . $table;
+		$this->table = $table;
+		return $this;
+	}
+
+	public function join($tables = array(), array $foreign_keys = array()) {
+		$table_2 = $this->table;
+		if(!is_array($tables))
+			$table = $tables;
+		else{
+			if(array_key_exists(0, $tables))
+				$table = $tables[0];
+			if(array_key_exists(1, $tables))
+				$table_2 = $tables[1];
+		}
+		$id_join_1 = $id_join_2 = $this->table . '_id';
+		if(array_key_exists(0, $foreign_keys))
+			$id_join_1 = $foreign_keys[0];
+		if(array_key_exists(1, $foreign_keys))
+			$id_join_2 = $foreign_keys[1];
+		$this->join [] = 'INNER JOIN ' . $table . ' ON ' . $table . '.' . $id_join_1 . ' = ' . $table_2 . '.' . $id_join_2;
+		return $this;
+	}
+
+	public function order($columns) {
+		if (!is_array($columns))
+			$columns = array($columns);
+		$this->order = 'ORDER BY ' . join(', ', $columns);
+		return $this;
+	}
+
+	public function where($conditions) {
+		if (is_array($conditions)){
+			if(count($conditions) > 0)
+				$this->where = 'WHERE ' . join(' AND ', $conditions);
+		}
+		else if ($conditions != '')
+			$this->where = 'WHERE ' . $conditions;
+		return $this;
+	}
+
+	public function limit($number, $offset = 0) {
+		$this->limit = 'LIMIT ' . $offset . ', ' . $number;
+		return $this;
+	}
+
+	public function count() {
+		$this->count = true;
+		return $this;
+	}
+
+	public function reset() {
+		$this->select = $this->where = $this->order = $this->limit = null;
+		$this->join = array();
+		$this->count = false;
+	}
+
+	public function expectedQuery() {
+		return ($this->count ? 'SELECT COUNT(*) as count FROM '.$this->table : $this->select ) . ' ' .
+				join(' ', $this->join) . ' ' .
+				$this->where . ' ' .
+				$this->order . ' ' .
+				$this->limit;
+	}
+
+	public function execute() {
+		$query = myPDO::get()->prepare(
+				$this->expectedQuery()
+		);
+		$enregistrements = new \Collection();
+		if ($query->execute())
+			$enregistrements->join($query->fetchAll(\PDO::FETCH_ASSOC));
+		$this->reset();
+		return $enregistrements;
+	}
+
+	/// Interdit le clonage du singleton
+	final public function __clone() {
+		throw new Exception("Clonage de " . __CLASS__ . " interdit !");
+	}
+
+	/// Récuperer le singleton
+	final public static function get() {
+		//self::msg("Recherche de l'instance...");
+		// Une instance est-elle disponible ?
+		if (!isset(self::$instance))
+			self::$instance = new QueryManager();
+		//self::msg("Instance trouvée");
+		return self::$instance;
+	}
+
+}
+
+?>
+>>>>>>> refs/heads/master
