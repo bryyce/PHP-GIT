@@ -11,6 +11,7 @@ $user->save();
 print_r($user);
 echo '<br><br>';
 print_r(Model\User::last());
+
 echo '<br><br>';
 echo round(memory_get_usage()/(1024),2)." Ko";
 ?>
