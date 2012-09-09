@@ -1,3 +1,118 @@
+<<<<<<< HEAD
+<?php
+
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+
+/**
+ * 
+ * Description of QueryManager
+ *
+ * @category    Class
+ * @package     ORM
+ * @author      bryyce
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU General Public License
+ * @link        http://www.bryyce.fr/
+ */
+
+namespace ORM;
+
+class QueryManager {
+
+  //put your code here
+  private static $instance;
+  private $select;
+  private $join = array();
+  private $order;
+  private $where;
+  private $limit;
+  private $count;
+  private $table;
+
+  public function __construct() {
+    
+  }
+
+  public function select($table, $columns = array()) {
+    $this->select = 'SELECT ' . (count($columns) == 0 ? '*' : join(', ', $columns)) . ' FROM ' . $table;
+    $this->table = $table;
+    return $this;
+  }
+
+  public function join($table) {
+    $id_join = $this->table . '_id';
+    $this->join [] = 'INNER JOIN ' . $table . ' ON ' . $table . '.' . $id_join . ' = ' . $this->table . '.' . $id_join;
+    return $this;
+  }
+
+  public function order($columns) {
+    if (!is_array($columns))
+      $columns = array($columns);
+    $this->order = 'ORDER BY ' . join(', ', $columns);
+    return $this;
+  }
+
+  public function where($conditions) {
+    if (is_array($conditions)){
+      if(count($conditions) > 0)
+        $this->where = 'WHERE ' . join(' AND ', $conditions);
+    }
+    else if ($conditions != '')
+      $this->where = 'WHERE ' . $conditions;
+    return $this;
+  }
+
+  public function limit($number, $offset = 0) {
+    $this->limit = 'LIMIT ' . $offset . ', ' . $number;
+    return $this;
+  }
+
+  public function count() {
+    $this->count = true;
+    return $this;
+  }
+
+  public function reset() {
+    $this->select = $this->where = $this->order = $this->limit = null;
+    $this->join = array();
+  }
+
+  public function expectedQuery() {
+    return $this->select . ' ' .
+        join(' ', $this->join) . ' ' .
+        $this->where . ' ' .
+        $this->order . ' ' .
+        $this->limit;
+  }
+
+  public function execute() {
+    $query = myPDO::get()->prepare(
+        $this->expectedQuery()
+    );
+    $enregistrements = new \Collection();
+    if ($query->execute())
+      $enregistrements->join($query->fetchAll(\PDO::FETCH_ASSOC));
+    return $enregistrements;
+  }
+
+
+  /// Récuperer le singleton
+  final public static function get() {
+    //self::msg("Recherche de l'instance...");
+    // Une instance est-elle disponible ?
+    if (!isset(self::$instance))
+      self::$instance = new QueryManager();
+    //self::msg("Instance trouvée");
+    return self::$instance;
+  }
+
+}
+
+?>
+=======
 <?php
 /**
  * QueryManager.class file
@@ -127,3 +242,4 @@ class QueryManager {
 }
 
 ?>
+>>>>>>> refs/heads/master
