@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * Validation.class file
+ * @filesource ./ORM/Validation.class 
+ */
 /**
  * Description of Validation
  *
@@ -15,7 +18,7 @@ namespace ORM;
 class Validation {
 
 	public static function validate($entity, array $validation, $id) {
-		foreach ($validation as $test => $values) {
+      foreach ($validation as $test => $values) {
 			switch ($test) {
 				case 'unique':
 					foreach ($values as $value)
@@ -33,9 +36,29 @@ class Validation {
 							$entity->errors[$value] = 'is not numeric';
 					break;
 				case 'length':
-					foreach ($values as $value)
-						if (!self::isNumeric($entity->$value))
-							$entity->errors[$value] = 'is not numeric';
+					$value = key($values);
+					if(is_array($values[$value])){
+						$size = $values[$value];
+						if (strlen($entity->$value) < $size)
+							$entity->errors[$value] = 'is too long (< '.$size.')';
+					}
+					else{
+						switch(key($values[$value])){
+							case 'gt':
+								if (strlen($entity->$value) < $values[$value]['gt'])
+									$entity->errors[$value] = 'is too long (< '.$values[$value]['gt'].')';
+								break;
+							case 'lt':
+								if (strlen($entity->$value) > $values[$value]['lt'])
+									$entity->errors[$value] = 'is too short (> '.$values[$value]['lt'].')';								
+								break;
+							case 'between':
+								if (strlen($entity->$value) > $values[$value]['between'][0] &&
+										  strlen($entity->$value) < $values[$value]['between'][1])
+									$entity->errors[$value] = 'is not between ( '.$values[$value]['between'][0].' and '.$values[$value]['between'][1].')';								
+								break;
+						}
+					}
 					break;
 			}
 		}
