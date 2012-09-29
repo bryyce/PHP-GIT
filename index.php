@@ -1,7 +1,8 @@
 <?php
 /**
  * index.php file
- * @filesource ./index.php 
+ * @filesource ./index.php
+ * @package		\ 
  */
 //print_r(Model\Membre::All());
 print("------------<br>");

@@ -3,6 +3,7 @@
 /**
  * Collection.class file
  * @filesource ./Collection.class 
+ * @package		\
  */
 
 /**
@@ -18,7 +19,7 @@
 class Collection implements ArrayAccess, Iterator {
 
 	/**
-	 * 	La collection d'objet à manipuler
+	 * 	La collection d'objet à  manipuler
 	 * @access private
 	 * @var array
 	 */
@@ -41,7 +42,7 @@ class Collection implements ArrayAccess, Iterator {
 
 	/**
 	 * 	Ajout un élément a la fin de la collection
-	 * @param mixed $element élément à ajouter
+	 * @param mixed $element élément à  ajouter
 	 */
 	public function push($element) {
 		$this->collection[] = $element;
@@ -103,7 +104,7 @@ class Collection implements ArrayAccess, Iterator {
 	}
 
 	/**
-	 * Replace le curseur à zero 
+	 * Replace le curseur à  zero 
 	 */
 	public function reset() {
 		$this->current_index = 0;
@@ -134,7 +135,7 @@ class Collection implements ArrayAccess, Iterator {
 	 * 
 	 * @see ArrayAccess::offsetGet($offset)
 	 * @param mixed $offset la clé recherchée
-	 * @return mixed l'élément associé à la clé 
+	 * @return mixed l'élément associé à  la clé 
 	 */
 	public function offsetGet($offset) {
 		return $this->collection[$offset];
@@ -156,7 +157,7 @@ class Collection implements ArrayAccess, Iterator {
 	 * 
 	 * @see ArrayAccess::offsetSet($offset, $value)
 	 * @param mixed $offset la clé recherchée
-	 * @param mixed $value la valeur à associer
+	 * @param mixed $value la valeur à  associer
 	 * @return boolean retourne TRUE s'il existe une clé du nom dans la collection
 	 */
 	public function offsetSet($offset, $value) {
@@ -182,7 +183,7 @@ class Collection implements ArrayAccess, Iterator {
 	}
 
 	/**
-	 *	Retourne l'élément courant de la collection
+	 * 	Retourne l'élément courant de la collection
 	 * @return mixed l'élément courant de la collection 
 	 */
 	public function current() {
@@ -190,7 +191,7 @@ class Collection implements ArrayAccess, Iterator {
 	}
 
 	/**
-	 *	Retourne la clé de l'élément courant dans la collection
+	 * 	Retourne la clé de l'élément courant dans la collection
 	 * @return mixed la clé de l'élémént courant 
 	 */
 	public function key() {
@@ -198,7 +199,7 @@ class Collection implements ArrayAccess, Iterator {
 	}
 
 	/**
-	 *	Passe le curseur sur l'élément suivant et le retourne
+	 * 	Passe le curseur sur l'élément suivant et le retourne
 	 * @return mixed le prochain élément de la collection
 	 */
 	public function next() {
@@ -206,7 +207,7 @@ class Collection implements ArrayAccess, Iterator {
 	}
 
 	/**
-	 *	Y'a t'il encore un élément dans la collection
+	 * 	Y'a t'il encore un élément dans la collection
 	 * @return boolean retourne TRUE s'il existe encore un element 
 	 */
 	public function valid() {
