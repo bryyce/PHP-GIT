@@ -91,7 +91,7 @@ abstract class MyEnregistrement extends Enregistrement {
 	}
 	
 	/**
-	 * Precharge tous les modÃ¨les de relations du modele de données
+	 * Precharge tous les modèles de relations du modele de données
 	 *	@static 
 	 */
 	public static function loadRelations() {

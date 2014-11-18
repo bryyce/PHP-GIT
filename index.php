@@ -5,6 +5,7 @@
  * @package		\ 
  */
 //print_r(Model\Membre::All());
+echo Router::getCurrentRoot($_SERVER[REQUEST_URI]);
 print("------------<br>");
 $user = Model\User::all();
 print_r($user);
@@ -20,4 +21,3 @@ $user = new Model\User(1);
 print_r($user);
 echo '<br><br>';
 echo round(memory_get_usage()/(1024),2)." Ko";
-?>

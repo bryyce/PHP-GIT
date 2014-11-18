@@ -1,0 +1,62 @@
+<?php
+
+/* 
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+namespace Tool;
+/**
+ * Description of Router
+ *
+ * @author bryyyce
+ */
+class Router {
+    private static $_router = NULL;
+    //put your code here
+    private $_routes = [];
+    
+    /**
+	 * créer une instance PDOStatement si elle existe pas
+	 * 
+	 *	@access private
+	 * @final 
+	 */
+	final private function __construct() {
+	}
+
+	/**
+	 * Destructeur
+	 * @final 
+	 */
+	final public function __destruct() {
+		if (!is_null(self::$_router)) {
+			self::$_router = null;
+	}
+
+	/**
+	 * Récuperer le singleton
+	 * @return \Tool\Router l'instance courante de Router 
+	 * @final 
+	 */
+	final public static function get() {
+		// Une instance est-elle disponible ?
+		if (!isset(self::$_router))
+			self::$_router = new Router();
+		return self::$_router;
+	}
+    
+    public function getCurrentRoute($request_url){
+        $elements = split('/', $request_url);
+        
+    }
+    
+    public function match($route, $action, $params = []) {
+        
+    }
+    
+    public function resources($resource, $params = []) {
+        
+    }
+}
