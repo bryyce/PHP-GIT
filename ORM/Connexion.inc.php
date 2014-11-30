@@ -5,32 +5,7 @@
  * @package		ORM
  */
 namespace ORM;
-error_reporting(E_ALL);
 
-/**
- * 	Handler d'exception non attrapée
- * 
- * @param object $exception  L'Exception non attrappée
- */
-function exceptionHandler($exception) {
-	echo "<pre>\n";
-	echo $exception->getMessage() . "\n";
-	echo $exception->getTraceAsString() . "\n";
-	echo "</pre>\n";
-}
-
-set_exception_handler('ORM\exceptionHandler');
-
-/**
- * 	Présent le var_dump d'une var 
- * 
- * @param mixed $var la variable à afficher 
- */
-function dump($var) {
-	echo "<pre>\n";
-	var_dump($var);
-	echo "</pre>\n";
-}
 
 /**
  *  Encapsulation de PDOStatement  Connexion Class Doc Comment
@@ -281,5 +256,5 @@ class myPDO {
 
 }
 
-myPDO::parametres('mysql:localhost;port=1131;dbname=orm', 'orm', 'orm');
+myPDO::parametres('mysql:localhost;port=3306;dbname=orm', 'orm', 'orm');
 ?>
