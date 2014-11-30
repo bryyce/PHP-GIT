@@ -2,14 +2,14 @@
 
 /**
  * MyEnregistrement.class file
- * @filesource ./ORM/MyEnregistrement.class 
+ * @filesource ./ORM/MyEnregistrement.class
  * @package     ORM
  */
 
 namespace ORM;
 
 /**
- * 
+ *
  * Description of MyEnregistrement
  *
  * @todo        gerer le set pour hbtm
@@ -23,7 +23,7 @@ namespace ORM;
  */
 abstract class MyEnregistrement extends Enregistrement {
 	/**
-	 * identifiant de table en BDD 
+	 * identifiant de table en BDD
 	 */
 
 	const CLE_PRI = "id";
@@ -31,21 +31,21 @@ abstract class MyEnregistrement extends Enregistrement {
 	/**
 	 * Tableau qui gere les relations 1-1
 	 * @access protected
-	 * @static  
+	 * @static
 	 * @var array
 	 */
 	protected static $has_one = array();
 	/**
 	 * Tableau qui gere les relations 1-n
 	 * @access protected
-	 * @static  
+	 * @static
 	 * @var array
 	 */
 	protected static $has_many = array();
 	/**
 	 * Tableau qui gere les relations n-n
 	 * @access protected
-	 * @static 
+	 * @static
 	 * @var array
 	 */
 	protected static $has_and_belongs_to_many = array();
@@ -59,22 +59,22 @@ abstract class MyEnregistrement extends Enregistrement {
 	/**
 	 * Tableau qui stocke les éléments charger depuis la base de données
 	 * @access protected
-	 * @static  
+	 * @static
 	 * @var array
 	 */
 	protected static $relations_elem = array();
-	
+
 	/**
 	 * Tableau qui stocke les erreurs de validation
 	 *	@access public
 	 * @var array
 	 */
 	public $errors = array();
-	
+
 	/**
 	 * Tableau qui stocke les validations à effectuer avant la sauvegarde en base de données
 	 * @access protected
-	 * @static  
+	 * @static
 	 * @var array
 	 */
 	protected static $validate = array();
@@ -89,10 +89,10 @@ abstract class MyEnregistrement extends Enregistrement {
 		if ($_id != null)
 			$this->lecture($_id);
 	}
-	
+
 	/**
 	 * Precharge tous les modèles de relations du modele de données
-	 *	@static 
+	 *	@static
 	 */
 	public static function loadRelations() {
 		foreach (static::$has_one as $k => $v) {
@@ -125,10 +125,10 @@ abstract class MyEnregistrement extends Enregistrement {
 				static::$belongs_to[$k]['class'] = 'Model\\' . ucfirst($k);
 		}
 	}
-	
+
 	/**
 	 * Renvoie les etiquettes de la tables
-	 * 
+	 *
 	 *	@uses Config::getFields()
 	 * @return string[]
 	 */
@@ -138,7 +138,7 @@ abstract class MyEnregistrement extends Enregistrement {
 
 	/**
 	 * Donne la cle primaire de la table.
-	 * @return string 
+	 * @return string
 	 */
 	protected static function cle_pri() {
 		return static::CLE_PRI;
@@ -146,7 +146,7 @@ abstract class MyEnregistrement extends Enregistrement {
 
 	/**
 	 *	retourne la valeur de la clé primaire de la table
-	 * @return int 
+	 * @return int
 	 */
 	protected function get_primary_key_value() {
 		$id = static::cle_pri();
@@ -155,7 +155,7 @@ abstract class MyEnregistrement extends Enregistrement {
 
 	/**
 	 *	Retourne le nom de la classe
-	 * @return string 
+	 * @return string
 	 */
 	protected static function getClassName() {
 		return strtolower(preg_replace('#([a-zA-Z]+\\\\)+([a-zA-Z]+)#i', '$2', get_called_class()));
@@ -164,7 +164,7 @@ abstract class MyEnregistrement extends Enregistrement {
 	/**
 	 *	retourne le nom de la table mysql
 	 * @uses Config::getTable()
-	 * @return string 
+	 * @return string
 	 */
 	protected static function table() {
 		return Config::getTable(static::getClassName());
@@ -173,19 +173,22 @@ abstract class MyEnregistrement extends Enregistrement {
 	/**
 	 *	Retourne une collection d'enregistrements de la table sql de l'instance en fonction d'une condition sql
 	 * @param string $cond la condition sql
-	 * @return \Collection 
+	 * @return \Collection
 	 */
 	protected static function allBy($cond = "") {
 		$records = new \Collection();
 		// Execution de la requete avec le parametre et lecture du resultat
-		foreach (QueryManager::get()->select(static::table())->where($cond)->execute() as $enregistrement)
-			$records->push(static::load($enregistrement));
+		foreach (QueryManager::get()->select(static::table())->where($cond)->execute() as $record) {
+			if (!is_null($record)) {
+				$records->push(static::load($record));
+			}
+		}
 		return $records;
 	}
 
 	/**
 	 *	Retourne tous les enregistrements de la table sql de l'instance
-	 * @return \Collection 
+	 * @return \Collection
 	 */
 	public static function all() {
 		return self::allBy();
@@ -194,34 +197,35 @@ abstract class MyEnregistrement extends Enregistrement {
 	/**
 	 *	Retourne le premier enregistrement de la table sql de l'instance
 	 * @param array $_params ensemble de condition
-	 * @return \Collection 
+	 * @return \Collection
 	 */
 	public static function first($_params = array()) {
 		$params = array();
 		foreach ($_params as $key => $value)
 			$params[] = "$key = '$value'";
-		return static::load(QueryManager::get()->select(static::table())->where($params)->order('id')->limit(1)->execute()->first());
+		$collection = QueryManager::get()->select(static::table())->where($params)->order('id')->limit(1)->execute();
+		return static::load($collection->count() ? $collection->first() : array());
 	}
 
 	/**
 	 *	Retourne le dernier enregistrement de la table sql de l'instance
 	 * @param array $_params ensemble de condition
-	 * @return \Collection 
+	 * @return \Collection
 	 */
 	public static function last($_params = array()) {
 		$params = array();
 		foreach ($_params as $key => $value)
 			$params[] = "$key = '$value'";
-		return static::load(QueryManager::get()->select(static::table())->where($params)->order('id DESC')->limit(1)->execute()->first());
+		$collection = QueryManager::get()->select(static::table())->where($params)->order('id DESC')->limit(1)->execute();
+		return static::load($collection->count() ? $collection->first() : array());
 	}
 
 	/**
 	 * Compte tous les éléments présent en base de données
-	 * 
+	 *
 	 * @param array $_params tous les paramètres pour faire les décomptes
 	 * @param string $_others autres paramètres directement en SQL pour faire les décomptes
-	 * @return int  Retourne le nombre d'éléments 
-
+	 * @return int  Retourne le nombre d'éléments
 	 */
 	public static function count($_params = array(), $_others = '') {
 		$params = array();
@@ -246,7 +250,7 @@ abstract class MyEnregistrement extends Enregistrement {
 	 * @param string le nom de la méthode (findBy|firstBy|lastBy|countBy)...
 	 * @param array $params les paramètre d'appel de la fonction
 	 * @return \Collection object ou int suivant la méthode appelée
-	 * @throws \Exception 
+	 * @throws \Exception
 	 */
 	public static function __callStatic($method, $params) {
 		if (!preg_match('/^(find|first|last|count)By(\w+)$/', $method, $matches)) {
@@ -265,7 +269,7 @@ abstract class MyEnregistrement extends Enregistrement {
 	/**
 	 *	Recherche tous les éléments d'une base de données en fonction d'un tableau de paramètres
 	 * @param array $_params les paramètres de recherchee
-	 * @return \Collection les données trouvées 
+	 * @return \Collection les données trouvées
 	 */
 	public static function find($_params) {
 		$params = array();
@@ -276,10 +280,10 @@ abstract class MyEnregistrement extends Enregistrement {
 
 	/**
 	 * Surcharge de __get pour donner acces aux valeurs sous la forme $e->attribut
-	 * 
+	 *
 	 * @param type $_cle Nom de la propriete
 	 * @return string or int or array or object suivant la propriété
-	 * @throws \Exception 
+	 * @throws \Exception
 	 */
 	public function __get($_cle) {
 		if (array_key_exists($_cle, $this->valeurs)) // La propriete demandee est bien une cle du tableau des valeurs
@@ -337,11 +341,11 @@ abstract class MyEnregistrement extends Enregistrement {
 
 	/**
 	 *	Surcharge de __set pour donner acces aux valeurs sous la forme $e->attribut=val
-	 * 
+	 *
 	 * @param string $_cle Nom de la propriete
 	 * @param object $_val Sa nouvelle valeur
 	 * @return object la nouvelle valeur de l'objet
-	 * @throws \Exception 
+	 * @throws \Exception
 	 */
 	public function __set($_cle, $_val){
 		if (array_key_exists($_cle, $this->valeurs)) // La propriete demandee est bien une cle du tableau des valeurs
@@ -355,7 +359,7 @@ abstract class MyEnregistrement extends Enregistrement {
 	 * Surcharge de __isset pour donner acces aux valeurs sous la forme isset($e->attribut)
 	 * @param string $_cle Nom de la propriete
 	 * @return boolean
-	 * @throws \Exception 
+	 * @throws \Exception
 	 */
 	public function __isset($_cle) {
 		if (array_key_exists($_cle, $this->valeurs)) // La propriete demandee est bien une cle du tableau des valeurs
@@ -364,12 +368,12 @@ abstract class MyEnregistrement extends Enregistrement {
 			isset(static::$relations_elem[$_cle]);
 		throw new \Exception("Attribut '$_cle' inconnu dans '" . get_class($this) . "'");
 	}
-	
+
 	/**
 	 * Surcharge de __unset pour donner acces aux valeurs sous la forme unset($e->attribut)
 	 * @param string $_cle Nom de la propriete
 	 * @return boolean
-	 * @throws \Exception 
+	 * @throws \Exception
 	 */
 	public function __unset($_cle /** Nom de la propriete */) {
 		if (array_key_exists($_cle, $this->valeurs))// La propriete demandee est bien une cle du tableau des valeurs
@@ -382,7 +386,7 @@ abstract class MyEnregistrement extends Enregistrement {
 	/**
 	 * Chargement de l'objet à partir d'attribut
 	 * @param array $attributes tous les attibuts à charger
-	 * @return \ORM\class 
+	 * @return \ORM\class
 	 */
 	public static function load($attributes) {
 		$class = get_called_class();

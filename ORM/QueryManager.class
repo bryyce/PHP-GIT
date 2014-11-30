@@ -1,13 +1,13 @@
 <?php
 /**
  * QueryManager.class file
- * @filesource ./ORM/QueryManager.class 
+ * @filesource ./ORM/QueryManager.class
  * @package     ORM
  */
 namespace ORM;
 
 /**
- * 
+ *
  * Description of QueryManager
  *
  * @category    Class
@@ -22,65 +22,65 @@ class QueryManager {
 	 * L'instance de gestionnaire de requête
 	 *	@access private
 	 * @static
-	 * @var \ORM\QueryManager 
+	 * @var \ORM\QueryManager
 	 */
 	private static $instance;
-	
+
 	/**
 	 * Compartiment SELECT de la requete SQL
 	 *	@access private
-	 * @var string 
+	 * @var string
 	 */
 	private $select;
-	
+
 	/**
 	 * Table à joindre dans la requete
 	 *	@access private
-	 * @var array 
+	 * @var array
 	 */
 	private $join = array();
-	
+
 	/**
 	 * Compartiment ORDER de la requete SQL
 	 *	@access private
-	 * @var string 
+	 * @var string
 	 */
 	private $order;
-	
+
 	/**
 	 * Compartiment WHERE de la requete SQL
 	 *	@access private
-	 * @var string 
+	 * @var string
 	 */
 	private $where;
-	
+
 	/**
 	 * Compartiment LIMIT de la requete SQL
 	 *	@access private
-	 * @var string 
+	 * @var string
 	 */
 	private $limit;
-	
+
 	/**
 	 * Est ce que la requete est de type COUNT
 	 *	@access private
-	 * @var boolean 
+	 * @var boolean
 	 */
 	private $count;
-	
+
 	/**
 	 * La table concernée par la requete SQL
 	 *	@access private
-	 * @var string 
+	 * @var string
 	 */
 	private $table;
-	
+
 	/**
 	 * Constructeur par defaut du manager de requête
-	 * Ne fait rien 
+	 * Ne fait rien
 	 */
 	public function __construct() {
-		
+
 	}
 
 	/**
@@ -98,9 +98,9 @@ class QueryManager {
 	/**
 	 *	Construit la partie JOIN de la requête
 	 * Utilisation de LEFT JOIN pour pouvoir ramener tous les éléments
-	 * 
+	 *
 	 * @param string $tables		(Optionnel) Les tables à joindre par default string mais peut etre array dans le cas d'une jointure multiple
-	 * @param array $foreign_keys	(Optionnel) Les clés étrangeres pour construire les jointures 
+	 * @param array $foreign_keys	(Optionnel) Les clés étrangeres pour construire les jointures
 	 * @return \ORM\QueryManager l'instance (pour la chainabilité)
 	 */
 	public function join($tables = array(), array $foreign_keys = array()) {
@@ -133,7 +133,7 @@ class QueryManager {
 		$this->order = 'ORDER BY ' . join(', ', $columns);
 		return $this;
 	}
-	
+
 	/**
 	 *	Construit la partie WHERE de la requête
 	 * @param array $conditions les différentes conditions SQL comme ceci array('a = 1','b >= 2') mais string autorisé
@@ -151,10 +151,10 @@ class QueryManager {
 
 	/**
 	 * Construction de la LIMIT SQL
-	 * 
+	 *
 	 * @param int $number Nombre d'élément à récupérer
 	 * @param int $offset (Optionnel) Décallage dans la limite
-	 * @return \ORM\QueryManager l'instance (pour la chainabilité) 
+	 * @return \ORM\QueryManager l'instance (pour la chainabilité)
 	 */
 	public function limit($number, $offset = 0) {
 		$this->limit = 'LIMIT ' . $offset . ', ' . $number;
@@ -163,7 +163,7 @@ class QueryManager {
 
 	/**
 	 *	Défini la requête en mode count
-	 * @return \ORM\QueryManager l'instance (pour la chainabilité) 
+	 * @return \ORM\QueryManager l'instance (pour la chainabilité)
 	 */
 	public function count() {
 		$this->count = true;
@@ -171,7 +171,7 @@ class QueryManager {
 	}
 
 	/**
-	 *	Remet l'instance à zéro 
+	 *	Remet l'instance à zéro
 	 */
 	public function reset() {
 		$this->select = $this->where = $this->order = $this->limit = null;
@@ -181,7 +181,7 @@ class QueryManager {
 
 	/**
 	 *	Construction de la requete SQL avec tous les éléments qui ont été fourni
-	 * @return string la requete SQL 
+	 * @return string la requete SQL
 	 */
 	public function expectedQuery() {
 		return ($this->count ? 'SELECT COUNT(*) as count FROM '.$this->table : $this->select ) . ' ' .
@@ -208,7 +208,7 @@ class QueryManager {
 
 	/**
 	 * Interdit le clonage du singleton
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	final public function __clone() {
 		throw new Exception("Clonage de " . __CLASS__ . " interdit !");

@@ -2,7 +2,7 @@
 
 /**
  * Enregistrement.class file
- * @filesource ./ORM/Enregistrement.class 
+ * @filesource ./ORM/Enregistrement.class
  */
 /**
  * Enregistrement Class Doc Comment
@@ -26,21 +26,21 @@ abstract class Enregistrement {
 	/**
 	 * Valeurs de l'enregistrement : tableau associatif de la forme nom_du_champ => valeur_pour_l_enregistrement
 	 * @var array
-	 * @access protected 
+	 * @access protected
 	 */
 	protected $valeurs = array();
 
 	/**
 	 * Constructeur
 	 * @param int $_id (Optionnel) Identifiant en base de données (préférence int mais string possible)
-	 * @abstract	  
+	 * @abstract
 	 */
 	abstract public function __construct($_id = null /** Identifiant */);
 
 	/**
 	 * Charge un enregistrement en fonction d'un identifiant de base de données
 	 * @param int $_id Identifiant en base de données (préférence int mais string possible)
-	 * @throws \Exception 
+	 * @throws \Exception
 	 */
 	public function lecture($_id) {
 		$records = QueryManager::get()->
@@ -56,12 +56,12 @@ abstract class Enregistrement {
 	/**
 	 * Donne le nom de la table contenant les informations
 	 */
-	abstract protected static function table();
+	 protected static function table(){}
 
 	/**
 	 * Donne le nom de la cle primaire de la table
 	 */
-	abstract protected static function cle_pri();
+	 protected static function cle_pri(){}
 
 	/**
 	 * Donne le nom des champs de la base de données
@@ -71,7 +71,7 @@ abstract class Enregistrement {
 	/**
 	 * Donne une etiquette particuliere
 	 * @param string $_cle le nom de la clé
-	 * @return string l'etiquette 
+	 * @return string l'etiquette
 	 */
 	public function etiquette($_cle) {
 		$etiquettes = $this->etiquettes();
@@ -145,7 +145,7 @@ abstract class Enregistrement {
 	 * @deprecated ne pas utiliser fonction par default, préferer un template html php
 	 * @param string $_deb Texte a placer avant chaque libelle
 	 * @param string $_mil Texte a placer entre le libelle et la valeur
-	 * @param string $_fin Texte a placer apres la valeur 
+	 * @param string $_fin Texte a placer apres la valeur
 	 */
 	public function affichage($_deb = '', $_mil = ' : ', $_fin = "<br>\n") {
 		foreach ($this->etiquettes() as $cle => $etiquette) {
@@ -158,7 +158,7 @@ abstract class Enregistrement {
 	 * @deprecated ne pas utiliser fonction par default, préferer un template html php
 	 * @param string $_deb Texte a placer avant chaque libelle
 	 * @param string $_mil Texte a placer entre le libelle et la valeur
-	 * @param string $_fin Texte a placer apres la valeur 
+	 * @param string $_fin Texte a placer apres la valeur
 	 */
 	public function formulaire($_deb = '', $_mil = ' : ', $_fin = "<br>\n") {
 		foreach ($this->etiquettes() as $cle => $etiquette) {
@@ -170,7 +170,7 @@ abstract class Enregistrement {
 
 	/**
 	 * Chargement des valeurs a partir d'un tableau associatif de meme forme que $this->valeurs
-	 * @param array $_donnees Tableau contenant les valeurs 
+	 * @param array $_donnees Tableau contenant les valeurs
 	 */
 	public function chargement($_donnees) {
 		// Pour chaque attribut, affecter la valeur si elle est presente dans le tableau
@@ -181,7 +181,7 @@ abstract class Enregistrement {
 
 	/**
 	 * Initialisation des noms des attributs qui sont les cles du tableau des valeurs
-	 * @param array $_cles  Tableau dont les cles sont les noms des attributs 
+	 * @param array $_cles  Tableau dont les cles sont les noms des attributs
 	 */
 	protected function initAttributs($_cles) {
 		// Initialisation du tableau des valeurs
