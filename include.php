@@ -2,18 +2,18 @@
 
 /**
  * include.php file
- * @filesource ./include.php 
+ * @filesource ./include.php
  */
 /**
  *	Fonction qui gere le chargement automatique des classes
  * @param string $class_name Nom de la classe a charger
- * @return void 
+ * @return void
  */
 error_reporting(E_ALL);
 
 /**
  * 	Handler d'exception non attrapée
- * 
+ *
  * @param object $exception  L'Exception non attrappée
  */
 function exceptionHandler($exception) {
@@ -28,9 +28,9 @@ function getBasePath() {
 set_exception_handler('exceptionHandler');
 
 /**
- * 	Présent le var_dump d'une var 
- * 
- * @param mixed $var la variable à afficher 
+ * 	Présent le var_dump d'une var
+ *
+ * @param mixed $var la variable à afficher
  */
 function dump($var) {
 	echo "<pre>\n";
@@ -46,7 +46,5 @@ function __autoload($class_name) {
 	//only require the class once, so quit after to save effort (if you got more, then name them something else
 	return;
 }
-require_once getBasePath().'Tool/Router.class';
-require_once getBasePath().'Tool/HttpRequest.class';
 require_once getBasePath().'Config/routes.config';
 ?>

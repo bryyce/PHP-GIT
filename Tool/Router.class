@@ -54,6 +54,10 @@ class Router {
 			if ($request_method == $route->Get('method')) {
 				$route_name = preg_replace('/\:([a-z]*)/', '([a-zA-Z0-9]*)', $route->Get('name'));
 				if (preg_match('|^'.$route_name.'$|', $request_url, $vars) !== 0) {
+					preg_match('/\:([a-z]*)/', $route->Get('name'), $vars_name);
+					unset($vars[0]);
+					unset($vars_name[0]);
+					$vars = array_combine($vars_name, $vars);
 					return ['controller' => $route->Get('controller'), 'action' => $route->Get('action'), 'params' => $vars];
 				}
 			}
@@ -71,10 +75,10 @@ class Router {
 		$this->match($resource . '/',		   	 $resource . '#index',  $params + array('method' => 'GET'));
 		$this->match($resource . '/:id/',		 $resource . '#show',	$params + array('method' => 'GET'));
 		$this->match($resource . '/new/',		 $resource . '#new',	$params + array('method' => 'GET'));
-		$this->match($resource . '/new/',	 	 $resource . '#create', $params + array('method' => 'POST'));
+		$this->match($resource . '/',	 	 $resource . '#create', $params + array('method' => 'POST'));
 		$this->match($resource . '/edit/:id/',   $resource . '#edit',	$params + array('method' => 'GET'));
-		$this->match($resource . '/edit/:id/', 	 $resource . '#update', $params + array('method' => 'PUT'));
-		$this->match($resource . '/delete/:id/', $resource . '#delete', $params + array('method' => 'DELETE'));
+		$this->match($resource . '/:id/', 	 $resource . '#update', $params + array('method' => 'PUT'));
+		$this->match($resource . '/:id/', $resource . '#delete', $params + array('method' => 'DELETE'));
 	}
 
 }

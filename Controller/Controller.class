@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -13,16 +13,20 @@ namespace Controller;
  * @author bryyyce
  */
 class Controller {
-    protected function beforeFilter() {
-        
+	public function setAction ($action) {
+		$this->_action = $action;
+	}
+
+    protected function beforeFilter () {
+
     }
-    protected function afterFilter() {
-        
+    protected function afterFilter () {
+
     }
-    
-    private function run($params) {
+
+    public function run ($params) {
         $this->beforeFilter();
-        $this->$action($params);
+        $this->{$this->_action}($params);
         $this->afterFilter();
     }
 }
