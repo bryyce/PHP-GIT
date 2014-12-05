@@ -14,7 +14,7 @@ use Lib, App\Model;
  * @author bryyyce
  */
 class UsersController extends Lib\Controller {
-	public function _index ($params) {
+	public function _index () {
 		$users = Model\User::all();
         $this->_view->setVars(array('users' => $users));
         $this->_view->render();
