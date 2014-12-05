@@ -25,6 +25,15 @@ function exceptionHandler($exception) {
 function getBasePath() {
 	return '/var/www/PHP-GIT/';
 }
+function getAppBasePath(){
+	return getBasePath() . 'App/';
+}
+function getViewsBasePath(){
+	return getAppBasePath() . 'Views/';
+}
+function getLibBasePath(){
+	return getBasePath() . 'Lib/';
+}
 set_exception_handler('exceptionHandler');
 
 /**
@@ -41,8 +50,28 @@ function dump($var) {
 function __autoload($class_name) {
 	//class directories
 	require_once(getBasePath(). str_replace('\\', '/', $class_name) . '.class');
-	if (strpos($class_name, 'Model\\') === 0)
+	if (strpos($class_name, 'App\\Model\\') === 0)
 		$class_name::loadRelations();
+	if (strpos($class_name, 'App\\Controller\\') === 0){
+		$function = $class_name::getControllerPrefix() . '_path';
+		if ($function != '_path') {
+			eval('function ' . $function . '($model = NULL){
+				if (!is_null($model)) {
+					return "http://localhost/'.$class_name::getControllerPrefix().'/{$model->id}/";
+				} else {
+					return "http://localhost/'.$class_name::getControllerPrefix().'/";
+				}
+			}');
+			eval('function new_' . $function . '(){
+				return "http://localhost/'.$class_name::getControllerPrefix().'/new/";
+			}');
+			eval('function edit_' . $function . '($model){
+				if (!is_null($model)) {
+					return "http://localhost/'.$class_name::getControllerPrefix().'/edit/{$model->id}/";
+				}
+			}');
+		}
+	}
 	//only require the class once, so quit after to save effort (if you got more, then name them something else
 	return;
 }
