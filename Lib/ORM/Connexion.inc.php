@@ -1,10 +1,10 @@
 <?php
 /**
  * Connection.inc.php file
- * @filesource ./ORM/Connexion.inc.php 
+ * @filesource ./ORM/Connexion.inc.php
  * @package		ORM
  */
-namespace ORM;
+namespace Lib\ORM;
 
 
 /**
@@ -20,13 +20,13 @@ class myPDOStatement {
 
 	/**
 	 * 	Instance PDO
-	 * @var object  
+	 * @var object
 	 */
 	private $_pdoStatement;
 
 	/**
 	 * Constructeur d'intance de PDO
-	 * @param object $_pdoStatement  L'objet PDOStatement 
+	 * @param object $_pdoStatement  L'objet PDOStatement
 	 * @final
 	 */
 	final public function __construct($_pdoStatement) {
@@ -34,9 +34,9 @@ class myPDOStatement {
 		$this->_pdoStatement = $_pdoStatement;
 	}
 
-	
+
 	/**
-	 * Destructeur d'intance de PDO 
+	 * Destructeur d'intance de PDO
 	 * @final
 	 */
 	final public function __destruct() {
@@ -44,11 +44,11 @@ class myPDOStatement {
 		$this->_pdoStatement = null;
 	}
 
-	
+
 	/**
 	 * Surcharge de toutes les méthodes inexistantes de myPDOStatement pour pouvoir appeler celles de PDOStatement
-	 * 
-	 * @param string $methodName Nom de la méthode 
+	 *
+	 * @param string $methodName Nom de la méthode
 	 * @param array $methodArguments Tableau des paramètres
 	 * @return mixed
 	 */
@@ -71,46 +71,46 @@ class myPDO {
 
 	/**
 	 * Instance du Singleton
-	 * @var object 
+	 * @var object
 	 */
 	private static $_mypdo = null;
-	
+
 	/**
 	 * Est en mode de de debogage
-	 * @var boolean 
+	 * @var boolean
 	 */
 	private static $_debug = false;
-	
+
 	/**
 	 *	Source de données
 	 * @var string
 	 */
 	private static $_dsn = null;
-	
+
 	/**
 	 * Identifiant de la base de données
 	 * @var string
 	 */
 	private static $_user = null;
-	
+
 	/**
 	 * mot de passe de la base de données
 	 * @var string
 	 */
 	private static $_pass = null;
-	
+
 	/**
 	 *	Lien de connexion à la base
-	 * @var object 
+	 * @var object
 	 */
 	private $_pdo = null;
 
 	/**
 	 * créer une instance PDOStatement si elle existe pas
-	 * 
+	 *
 	 *	@access private
 	 * @throws Exception
-	 * @final 
+	 * @final
 	 */
 	final private function __construct() {
 		self::msg("Demande construction PDO...");
@@ -142,7 +142,7 @@ class myPDO {
 
 	/**
 	 * Destructeur
-	 * @final 
+	 * @final
 	 */
 	final public function __destruct() {
 		self::msg("Demande de destruction PDO...");
@@ -159,8 +159,8 @@ class myPDO {
 
 	/**
 	 * Récuperer le singleton
-	 * @return \ORM\MyPDO l'instance courante de MyPDO 
-	 * @final 
+	 * @return \ORM\MyPDO l'instance courante de MyPDO
+	 * @final
 	 */
 	final public static function get() {
 		self::msg("Recherche de l'instance...");
@@ -173,7 +173,7 @@ class myPDO {
 
 	/**
 	 *	Fonction qui fixe les paramètres de connexion
-	 * 
+	 *
 	 * @param string $_dsn le nom d'acces du serveur PDO
 	 * @param string $_user l'utilisateur d'acces à la base de données
 	 * @param string $_pass le mot de passe d'acces à la base de données
@@ -189,7 +189,7 @@ class myPDO {
 
 	/**
 	 *	Interdit le clonage du singleton
-	 * @throws Exception 
+	 * @throws Exception
 	 * @final
 	 */
 	final public function __clone() {
@@ -224,11 +224,11 @@ class myPDO {
 
 	/**
 	 * Surcharge de toutes les méthodes inexistantes de myPDO pour pouvoir appeler celles de PDO
-	 * 
+	 *
 	 * @param string $methodName Nom de la méthode
 	 * @param type $methodArguments Tableau des paramètres
 	 * @return \ORM\myPDOStatement le gestionnaire de base de données
-	 * @throws Exception 
+	 * @throws Exception
 	 * @final
 	 */
 	final public function __call($methodName , $methodArguments) {

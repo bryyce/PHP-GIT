@@ -5,7 +5,7 @@
  * @filesource ./ORM/Validation.class
  * @package    ORM
  */
-namespace ORM;
+namespace Lib\ORM;
 
 /**
  * Description of Validation

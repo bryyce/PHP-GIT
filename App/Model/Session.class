@@ -2,11 +2,11 @@
 
 /**
  * Session.class file
- * @filesource ./Model/Session.class 
+ * @filesource ./Model/Session.class
  * @package		Model
  */
 
-namespace Model;
+namespace App\Model;
 
 /**
  * Session Class Doc Comment
@@ -20,15 +20,15 @@ class Session {
 
 	/**
 	 * l'utilisateur courant de la session
-	 * 
+	 *
 	 * 	@access private
-	 * @var User 
+	 * @var User
 	 */
 	private static $_user;
 
 	/**
 	 * Crée unu session en fonction de l'id en session
-	 * @return boolean 
+	 * @return boolean
 	 */
 	public static function CreateSession() {
 		session_start();
@@ -64,7 +64,7 @@ class Session {
 
 	/**
 	 * Verifie si l'utilisateur courant est administrateur
-	 * @return boolean 
+	 * @return boolean
 	 */
 	public static function isAdmin() {
 		return Session::$_user->isAdmin();
@@ -72,7 +72,7 @@ class Session {
 
 	/**
 	 * Renvoi l'utilisateur courant
-	 * @return User 
+	 * @return User
 	 */
 	public static function currentUser() {
 		return Session::$_user;

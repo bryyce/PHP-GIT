@@ -2,27 +2,27 @@
 
 /**
  * Config.class file
- * @filesource ./ORM/Config.class 
+ * @filesource ./ORM/Config.class
  * @package		ORM
  */
-namespace ORM;
+namespace Config;
 
 /**
  * Config Class Doc Comment
  *
  * @category	Class
  * @package		ORM
- * @author bryyce bric.robin@gmail.com 
+ * @author bryyce bric.robin@gmail.com
  * @license		http://www.gnu.org/copyleft/gpl.html GNU General Public License
  * @link		http://www.bryyce.fr/
  */
-class Config {
+class DBConfig {
 
 	/**
-	 * toutes les tables de base de données en fonction du nom du modele 
-	 * @static 
+	 * toutes les tables de base de données en fonction du nom du modele
+	 * @static
 	 * @access private
-	 * @var array 
+	 * @var array
 	 */
 	private static $tables = array(
 		 'user' => 'users',
@@ -30,10 +30,10 @@ class Config {
 	);
 
 	/**
-	 * tous les champs de base de données en fonction du nom de la table 
-	 * @static 
+	 * tous les champs de base de données en fonction du nom de la table
+	 * @static
 	 * @access private
-	 * @var array 
+	 * @var array
 	 */
 	private static $fields = array(
 		 'users' =>
@@ -57,7 +57,7 @@ class Config {
 	/**
 	 *	Donne le nom des champs de la base de données
 	 * @param string $table le nomde la table
-	 * @return array les champs de la base de données 
+	 * @return array les champs de la base de données
 	 */
 	public static function getFields($table) {
 		return static::$fields[$table];
@@ -65,7 +65,7 @@ class Config {
 /**
 	 *	Donne le nom de la table de la base de données
 	 * @param string $class le nom de la class
-	 * @return string  le nom de la table de la base de données 
+	 * @return string  le nom de la table de la base de données
 	 */
 	public static function getTable($class) {
 		return static::$tables[$class];

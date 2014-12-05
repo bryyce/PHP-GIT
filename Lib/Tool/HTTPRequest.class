@@ -1,6 +1,6 @@
 <?php
 
-namespace Tool;
+namespace Lib\Tool;
 
 /**
  * Description of HttpRequest

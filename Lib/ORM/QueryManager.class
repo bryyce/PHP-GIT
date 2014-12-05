@@ -4,7 +4,7 @@
  * @filesource ./ORM/QueryManager.class
  * @package     ORM
  */
-namespace ORM;
+namespace Lib\ORM;
 
 /**
  *

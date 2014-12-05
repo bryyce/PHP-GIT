@@ -6,8 +6,8 @@
  * @package     ORM
  */
 
-namespace ORM;
-
+namespace Lib\ORM;
+use Config;
 /**
  *
  * Description of MyEnregistrement
@@ -105,10 +105,10 @@ abstract class MyEnregistrement extends Enregistrement {
 			if (!array_key_exists('primary_key', static::$has_many[$k]))
 				static::$has_many[$k]['primary_key'] = $k . '_id';
 			if (!array_key_exists('class', static::$has_many[$k]))
-				static::$has_many[$k]['class'] = 'Model\\' . ucfirst($k);
+				static::$has_many[$k]['class'] = 'App\\Model\\' . ucfirst($k);
 		}
 		foreach (static::$has_and_belongs_to_many as $k => $v) {
-			$class = 'Model\\' . ucfirst(substr($k, 0, strlen($k) - 1));
+			$class = 'App\\Model\\' . ucfirst(substr($k, 0, strlen($k) - 1));
 			if (!array_key_exists('primary_key', static::$has_and_belongs_to_many[$k]))
 				static::$has_and_belongs_to_many[$k]['primary_key'] = substr($k, 0, strlen($k) - 1) . '_id';
 			if (!array_key_exists('class', static::$has_and_belongs_to_many[$k]))
@@ -122,7 +122,7 @@ abstract class MyEnregistrement extends Enregistrement {
 			if (!array_key_exists('primary_key', static::$belongs_to[$k]))
 				static::$belongs_to[$k]['primary_key'] = static::table() . '_id';
 			if (!array_key_exists('class', static::$belongs_to[$k]))
-				static::$belongs_to[$k]['class'] = 'Model\\' . ucfirst($k);
+				static::$belongs_to[$k]['class'] = 'App\\Model\\' . ucfirst($k);
 		}
 	}
 
@@ -133,7 +133,7 @@ abstract class MyEnregistrement extends Enregistrement {
 	 * @return string[]
 	 */
 	public function etiquettes() {
-		return Config::getFields(static::table());
+		return Config\DBConfig::getFields(static::table());
 	}
 
 	/**
@@ -167,7 +167,7 @@ abstract class MyEnregistrement extends Enregistrement {
 	 * @return string
 	 */
 	protected static function table() {
-		return Config::getTable(static::getClassName());
+		return Config\DBConfig::getTable(static::getClassName());
 	}
 
 	/**
