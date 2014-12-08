@@ -13,52 +13,61 @@ namespace Lib;
  * @author bryyyce
  */
 class Controller {
-	protected $_view = null;
+    protected $_view = null;
+    protected $_is_rendered = FALSE;
+    public function __construct(){
+        $this->_view = new View();
+    }
 
-	public function __construct(){
-		$this->_view = new View();
-	}
+    public function setAction ($action) {
+        $this->_action = $action;
+    }
 
-	public function setAction ($action) {
-		$this->_action = $action;
-	}
+    protected function beforeFilter () {
+        if (isset(static::$_before_filter)){
+            call_user_func(array($this,static::$_before_filter));
+        }
+    }
 
-	protected function beforeFilter () {
+    protected function afterFilter () {
+        if (isset(static::$_after_filter)){
+            call_user_func(array($this,static::$_after_filter));
+        }
+    }
 
-	}
+    public function run ($params) {
+        try {
+            if (method_exists($this, '_' . $this->_action)){
+                $this->_view->setDefaultView(self::getControllerPrefix().'/'.$this->_action);
+                $this->beforeFilter();
+                $this->{'_'.$this->_action}($params);
+                $this->afterFilter();
+                $this->render();
+            } else {
+                header("HTTP/1.1 404 Not Found");
+            }
+        } catch(\Exception\NotFoundException $e) {
+            header("HTTP/1.1 404 Not Found");
+            echo 'Not Found';
+            die;
+        }
+    }
 
-	protected function afterFilter () {
+    protected function render($params = []) {
+        if (!$this->_is_rendered) {
+            $renderedView = $this->_view->render();
+            echo $renderedView;
+            $this->_is_rendered = TRUE;
+        }
+    }
 
-	}
+    public static function getControllerPrefix() {
+        return strtolower(str_replace('Controller','',str_replace('App\\Controller\\', '', get_called_class())));
+    }
 
-	public function run ($params) {
-		try {
-			if (method_exists($this, '_' . $this->_action)){
-				$this->_view->setDefaultView(self::getControllerPrefix().'/'.$this->_action);
-				$this->beforeFilter();
-				$this->{'_'.$this->_action}($params);
-				$this->afterFilter();
-			} else {
-				header("HTTP/1.1 404 Not Found");
-			}
-		} catch(\Exception\NotFoundException $e) {
-			header("HTTP/1.1 404 Not Found");
-			echo 'Not Found';
-			die;
-		}
-	}
-
-	protected function render($params = []) {
-		require_once 'Views/layout.phtml';
-	}
-
-	public static function getControllerPrefix() {
-		return strtolower(str_replace('Controller','',str_replace('App\\Controller\\', '', get_called_class())));
-	}
-
-	public function redirectTo($url) {
-		header("HTTP/1.1 307 Temporary Redirect");
-		echo $url;
-		die;
-	}
+    public function redirectTo($url) {
+        header("HTTP/1.1 307 Temporary Redirect");
+        echo $url;
+        die;
+    }
 }
