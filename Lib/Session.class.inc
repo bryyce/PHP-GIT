@@ -11,64 +11,64 @@ use App\Model\User;
  */
 class Session {
 
-	/**
-	 * l'utilisateur courant de la session
-	 *
-	 * 	@access private
-	 * @var User
-	 */
-	private static $_user;
+    /**
+     * l'utilisateur courant de la session
+     *
+     *     @access private
+     * @var User
+     */
+    private static $_user;
 
-	/**
-	 * Crée unu session en fonction de l'id en session
-	 * @return boolean
-	 */
-	public static function CreateSession() {
-		session_start();
-		if (!isset($_SESSION['id'])) {
-			session_destroy();
-			return false;
-		}
-		Session::$_user = new User($_SESSION['id']);
-		return true;
-	}
+    /**
+     * Crée unu session en fonction de l'id en session
+     * @return boolean
+     */
+    public static function CreateSession() {
+        session_start();
+        if (!isset($_SESSION['id'])) {
+            session_destroy();
+            return false;
+        }
+        Session::$_user = new User($_SESSION['id']);
+        return true;
+    }
 
-	/**
-	 * 	Crée unu session ou redirige vers une page passée en parametre si la session n'a pas pu etre créée
-	 * @param string $page la page de redirection
-	 */
-	public static function CreateSessionOrDie($page) {
-		if (!self::CreateSession()) {
-			header('Location: /' . $page);
-			exit;
-		}
-	}
+    /**
+     *     Crée unu session ou redirige vers une page passée en parametre si la session n'a pas pu etre créée
+     * @param string $page la page de redirection
+     */
+    public static function CreateSessionOrDie($page) {
+        if (!self::CreateSession()) {
+            header('Location: /' . $page);
+            exit;
+        }
+    }
 
-	/**
-	 * 	Crée unu session ou redirige vers une page passée en parametre si la session n'a pas pu etre créée ou n'est pas admin
-	 * @param string $page la page de redirection
-	 */
-	public static function CreateAdminSessionOrDie($page) {
-		if (!self::CreateSession() || !Session::isAdmin()) {
-			header('Location: /' . $page);
-			exit;
-		}
-	}
+    /**
+     *     Crée unu session ou redirige vers une page passée en parametre si la session n'a pas pu etre créée ou n'est pas admin
+     * @param string $page la page de redirection
+     */
+    public static function CreateAdminSessionOrDie($page) {
+        if (!self::CreateSession() || !Session::isAdmin()) {
+            header('Location: /' . $page);
+            exit;
+        }
+    }
 
-	/**
-	 * Verifie si l'utilisateur courant est administrateur
-	 * @return boolean
-	 */
-	public static function isAdmin() {
-		return Session::$_user->isAdmin();
-	}
+    /**
+     * Verifie si l'utilisateur courant est administrateur
+     * @return boolean
+     */
+    public static function isAdmin() {
+        return Session::$_user->isAdmin();
+    }
 
-	/**
-	 * Renvoi l'utilisateur courant
-	 * @return User
-	 */
-	public static function currentUser() {
-		return Session::$_user;
-	}
+    /**
+     * Renvoi l'utilisateur courant
+     * @return User
+     */
+    public static function currentUser() {
+        return Session::$_user;
+    }
 }
 ?>
