@@ -54,7 +54,6 @@ class View {
             extract($this->_view_vars);
         }
         $file .= '.phtml';
-        $view = $this;
         include getViewsBasePath(). $file;
     }
 }

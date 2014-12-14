@@ -30,7 +30,7 @@ function getAppBasePath(){
     return getBasePath() . 'App/';
 }
 function getViewsBasePath(){
-    return getAppBasePath() . 'Views/';
+    return getAppBasePath() . 'View/';
 }
 function getLibBasePath(){
     return getBasePath() . 'Lib/';

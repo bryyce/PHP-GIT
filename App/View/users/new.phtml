@@ -1,0 +1,15 @@
+<table class='table'>
+    <?php (new Lib\Form\Form('users/new'))
+          ->addInput('TextInput', new Lib\Form\TextInput(['value'=>'toto','class'=>'titi']))
+          ->addInput('HiddenInput', new Lib\Form\HiddenInput(['value'=>'toto','class'=>'titi']))
+          ->addInput('FileInput', new Lib\Form\FileInput(['value'=>'toto','class'=>'titi']))
+          ->addInput('CheckboxInput', new Lib\Form\CheckboxInput(['value'=>'toto','id'=>'titi']))
+          ->addInput('ButtonInput', new Lib\Form\ButtonInput(['value'=>'toto','class'=>'titi']))
+          ->addInput('SubmitInput', new Lib\Form\SubmitInput(['value'=>'toto','class'=>'titi']))
+          ->addInput('RadioInput', new Lib\Form\RadioInput(['value'=>'toto','class'=>'titi']))
+          ->render(); ?>
+		<tr>
+			<td><?= $user->login ?></td>
+		</tr>
+     
+</table>
