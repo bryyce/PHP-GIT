@@ -1,0 +1,9 @@
+<form action="<?= $this->_action ?>" method="<?= $this->_method ?>">
+    <?php if (in_array($this->_method,['GET','POST'])) { ?>
+        <input type='hidden' name='_method' value='<?= $this->_method ?>'/>
+    <?php } ?>
+    <?php foreach ($this->_inputs as $key => $input) { ?>
+        
+        <p><?php $this->_labels[$key]->render(); $input->render(); ?></p>
+    <?php } ?>
+</form>
