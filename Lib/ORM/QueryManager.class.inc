@@ -105,20 +105,24 @@ class QueryManager {
 	 */
 	public function join($tables = array(), array $foreign_keys = array()) {
 		$table_2 = $this->table;
-		if(!is_array($tables))
-			$table = $tables;
-		else{
-			if(array_key_exists(0, $tables))
-				$table = $tables[0];
-			if(array_key_exists(1, $tables))
-				$table_2 = $tables[1];
-		}
-		$id_join_1 = $id_join_2 = $this->table . '_id';
-		if(array_key_exists(0, $foreign_keys))
-			$id_join_1 = $foreign_keys[0];
-		if(array_key_exists(1, $foreign_keys))
-			$id_join_2 = $foreign_keys[1];
-		$this->join [] = 'LEFT JOIN ' . $table . ' ON ' . $table . '.' . $id_join_1 . ' = ' . $table_2 . '.' . $id_join_2;
+		if (!is_array($tables)) {
+            $table = $tables;
+        } else {
+            if (array_key_exists(0, $tables)) {
+                $table = $tables[0];
+            }
+            if (array_key_exists(1, $tables)) {
+                $table_2 = $tables[1];
+            }
+        }
+        $id_join_1 = $id_join_2 = $this->table . '_id';
+		if (array_key_exists(0, $foreign_keys)) {
+            $id_join_1 = $foreign_keys[0];
+        }
+        if (array_key_exists(1, $foreign_keys)) {
+            $id_join_2 = $foreign_keys[1];
+        }
+        $this->join [] = 'LEFT JOIN ' . $table . ' ON ' . $table . '.' . $id_join_1 . ' = ' . $table_2 . '.' . $id_join_2;
 		return $this;
 	}
 
@@ -128,9 +132,10 @@ class QueryManager {
 	 * @return \ORM\QueryManager l'instance (pour la chainabilité)
 	 */
 	public function order($columns) {
-		if (!is_array($columns))
-			$columns = array($columns);
-		$this->order = 'ORDER BY ' . join(', ', $columns);
+		if (!is_array($columns)) {
+            $columns = array($columns);
+        }
+        $this->order = 'ORDER BY ' . join(', ', $columns);
 		return $this;
 	}
 
@@ -140,13 +145,15 @@ class QueryManager {
 	 * @return \ORM\QueryManager l'instance (pour la chainabilité)
 	 */
 	public function where($conditions) {
-		if (is_array($conditions)){
-			if(count($conditions) > 0)
-				$this->where = 'WHERE ' . join(' AND ', $conditions);
-		}
-		else if ($conditions != '')
-			$this->where = 'WHERE ' . $conditions;
-		return $this;
+		if (is_array($conditions)) {
+			if (count($conditions) > 0) {
+                $this->where = 'WHERE ' . join(' AND ', $conditions);
+            }
+        }
+		else if ($conditions != '') {
+            $this->where = 'WHERE ' . $conditions;
+        }
+        return $this;
 	}
 
 	/**
@@ -200,13 +207,56 @@ class QueryManager {
 				$this->expectedQuery()
 		);
 		$enregistrements = new \Collection();
-		if ($query->execute())
-			$enregistrements->join($query->fetchAll(\PDO::FETCH_ASSOC));
-		$this->reset();
+		if ($query->execute()) {
+            $enregistrements->join($query->fetchAll(\PDO::FETCH_ASSOC));
+        }
+        $this->reset();
 		return $enregistrements;
 	}
 
-	/**
+    /**
+     * 
+     * @param type $db_name
+     */
+    public function createDatabase($db_name) {
+        myPDO::get()->prepare('CREATE DATABASE ' . $db_name)->execute();
+    }
+    
+    public function createTable($table_name, $columns, $engine, $options){
+        $_columns = [];
+        foreach ($columns as $column) {
+            $_columns[] = "{$column->getName()} {$column->getType()} {$column->getOption('default_value')}";
+        }
+        $sql = "CREATE TABLE $table_name ("
+                . "id int primary key not null auto_increment,"
+                . join(',', $_columns)
+                . " ) Engine $engine";
+        myPDO::get()->prepare($sql)->execute();
+    }
+    
+    public function dropTable($table_name) {
+        echo 'ici';
+        debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+        myPDO::get()->prepare("DROP TABLE $table_name")->execute();
+    }
+    
+    public function executeRawQuery($query) {
+        myPDO::get()->prepare($query)->execute();
+    }
+
+    public function beginTransaction() {
+        myPDO::get()->beginTransaction();
+    }
+    
+    public function commit() {
+        myPDO::get()->commit();
+    }
+    
+    public function rollback() {
+        myPDO::get()->rollback();
+    }
+
+    /**
 	 * Interdit le clonage du singleton
 	 * @throws Exception
 	 */
@@ -215,18 +265,15 @@ class QueryManager {
 	}
 
 	/**
-	 *	Récuperer le singleton
-	 * @return \ORM\QueryManager
+	 * Récuperer le singleton
+	 * @return \Lib\ORM\QueryManager
 	 */
 	final public static function get() {
-		//self::msg("Recherche de l'instance...");
 		// Une instance est-elle disponible ?
-		if (!isset(self::$instance))
-			self::$instance = new QueryManager();
-		//self::msg("Instance trouvée");
+		if (!isset(self::$instance)) {
+            self::$instance = new QueryManager();
+        }
 		return self::$instance;
 	}
-
+    
 }
-
-?>

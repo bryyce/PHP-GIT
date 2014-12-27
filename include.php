@@ -10,7 +10,6 @@
  * @return void
  */
 error_reporting(E_ALL);
-ob_start('ob_gzhandler');
 
 /**
  *     Handler d'exception non attrapée
@@ -50,6 +49,9 @@ function dump($var) {
 
 function __autoload($class_name) {
     //class directories
+    if (strpos($class_name, 'Exception')> 0) {
+        return;
+    }
     require_once(getBasePath(). str_replace('\\', '/', $class_name) . '.class.inc');
     if (strpos($class_name, 'App\\Model\\') === 0)
         $class_name::loadRelations();
@@ -76,5 +78,6 @@ function __autoload($class_name) {
     //only require the class once, so quit after to save effort (if you got more, then name them something else
     return;
 }
+
+require_once getLibBasePath().'ORM/Connexion.inc.php';
 require_once getBasePath().'Config/routes.config';
-?>

@@ -55,7 +55,7 @@ class myPDOStatement {
 	final public function __call($methodName , $methodArguments) {
 		// La méthode appelée fait-elle partie de la classe PDOStatement
 		if (!method_exists($this->_pdoStatement, $methodName))
-			throw new Exception("PDOStatement::$methodName n'existe pas");
+			throw new \Exception("PDOStatement::$methodName n'existe pas");
 		// Message de debogage
 		myPDO::msg("PDOStatement::" . $methodName . " (" . var_export($methodArguments, true) . ")");
 		// Appel de la méthode avec l'objet PDOStatement
@@ -193,7 +193,7 @@ class myPDO {
 	 * @final
 	 */
 	final public function __clone() {
-		throw new Exception("Clonage de " . __CLASS__ . " interdit !");
+		throw new \Exception("Clonage de " . __CLASS__ . " interdit !");
 	}
 
 	/**
@@ -234,7 +234,7 @@ class myPDO {
 	final public function __call($methodName , $methodArguments) {
 		// La méthode appelée fait-elle partie de la classe PDO
 		if (!method_exists($this->_pdo, $methodName))
-			throw new Exception("\PDO::$methodName n'existe pas");
+			throw new \Exception("\PDO::$methodName n'existe pas");
 		// Message de debogage
 		self::msg("\PDO::$methodName (" . implode($methodArguments, ", ") . ")");
 		// Appel de la méthode avec l'objet PDO
@@ -257,4 +257,3 @@ class myPDO {
 }
 
 myPDO::parametres('mysql:localhost;port=3306;dbname=orm', 'orm', 'orm');
-?>
