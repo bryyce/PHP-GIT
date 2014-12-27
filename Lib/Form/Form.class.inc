@@ -10,12 +10,12 @@ namespace Lib\Form;
  * @link    http://www.bryyce.fr/
  */
 class Form {
-    protected $_action = NULL;  
-    protected $_method = NULL;  
-    protected $_inputs = NULL;    
+    protected $_action = NULL;
+    protected $_method = NULL;
+    protected $_inputs = NULL;
     protected $_labels = NULL;
 
-    
+
     public function __construct($action, $method = 'POST') {
         $this->_action = $action;
         $this->_method = $method;
@@ -27,11 +27,11 @@ class Form {
     public function render() {
         return require(getLibBasePath() . 'View/form.phtml');
     }
-    
+
     public function addInput($label, $input) {
         $this->_labels->push(new Label($label,['for' => $input->getHtmlId()]));
         $this->_inputs->push($input);
         return $this;
     }
-    
+
 }

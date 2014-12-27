@@ -8,11 +8,11 @@ namespace Lib\Form;
  */
 abstract class Input {
     protected $_attributes = [];
-    
+
     public function __construct ($attributes = []) {
         $this->_attributes = $attributes;
     }
-    
+
     public function getHtmlId () {
         return isset($this->_attributes['id'])? $this->_attributes['id']: '';
     }

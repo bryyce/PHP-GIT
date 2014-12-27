@@ -400,9 +400,9 @@ abstract class MyEnregistrement extends Enregistrement {
 	 * @return boolean renvoie TRUE si l'objetà pu etre sauvegardé
 	 */
 	public function save() {
-		if (Validation::validate($this, static::$validate, static::cle_pri()))
-			return false;
-		return $this->ecriture();
+		if (Validation::validate($this, static::$validate, static::cle_pri())) {
+            return false;
+        }
+        return $this->ecriture();
 	}
 }
-?>

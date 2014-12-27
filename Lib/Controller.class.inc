@@ -37,16 +37,19 @@ class Controller {
 
     public function run ($params) {
         try {
+            ORM\QueryManager::get()->beginTransaction();
             if (method_exists($this, '_' . $this->_action)){
                 $this->_view->setDefaultView(self::getControllerPrefix().'/'.$this->_action);
                 $this->beforeFilter();
                 $this->{'_'.$this->_action}($params);
                 $this->afterFilter();
                 $this->render();
+                ORM\QueryManager::get()->commit();
             } else {
                 header("HTTP/1.1 404 Not Found");
             }
         } catch(\Exception\NotFoundException $e) {
+            ORM\QueryManager::get()->rollback();
             header("HTTP/1.1 404 Not Found");
             echo 'Not Found';
             die;

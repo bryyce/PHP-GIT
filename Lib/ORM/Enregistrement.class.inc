@@ -16,8 +16,6 @@
 
 namespace Lib\ORM;
 
-require_once 'Connexion.inc.php';
-
 /**
  *  Modele abstrait d'enregistrement
  */
@@ -47,11 +45,12 @@ abstract class Enregistrement {
 				  select($this->table())->
 				  where($this->cle_pri() . " = " . $_id)->
 				  execute();
-		if ($records->count() == 1)
-			$this->chargement($records->first());
-		else// Lecture impossible
-			throw new \Exception\NotFoundException("Lecture de l'enregistrement {$_id} impossible");
-	}
+          if ($records->count() == 1) {
+            $this->chargement($records->first());
+        } else {// Lecture impossible
+            throw new \Exception\NotFoundException("Lecture de l'enregistrement {$_id} impossible");
+        }
+    }
 
 	/**
 	 * Donne le nom de la table contenant les informations

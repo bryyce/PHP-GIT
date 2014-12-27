@@ -3,7 +3,7 @@
         <input type='hidden' name='_method' value='<?= $this->_method ?>'/>
     <?php } ?>
     <?php foreach ($this->_inputs as $key => $input) { ?>
-        
+
         <p><?php $this->_labels[$key]->render(); $input->render(); ?></p>
     <?php } ?>
 </form>
