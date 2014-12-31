@@ -235,8 +235,6 @@ class QueryManager {
     }
     
     public function dropTable($table_name) {
-        echo 'ici';
-        debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
         myPDO::get()->prepare("DROP TABLE $table_name")->execute();
     }
     

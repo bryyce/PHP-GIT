@@ -9,12 +9,12 @@
 namespace Lib\Form;
 
 /**
- * Description of CheckboxInput
+ * Description of PasswordInput
  *
  * @author bryyce
  */
-class CheckboxInput extends Input {
+class PasswordInput extends Input {
     public function __construct($name, $value, $attributes = array()) {
-        parent::__construct($name, $value, ['type' => 'checkbox'] + $attributes);
+        parent::__construct($name, $value, ['type' => 'password'] + $attributes);
     }
 }

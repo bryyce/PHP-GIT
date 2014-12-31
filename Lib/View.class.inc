@@ -7,7 +7,7 @@ class View {
 
 
 
-    public function setDefaultView($file_prefix) {
+    public function setView($file_prefix) {
         $this->_file_prefix = $file_prefix;
     }
 

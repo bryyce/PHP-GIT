@@ -22,7 +22,7 @@ class UsersController extends Lib\Controller
 
     protected function _show ($params)
     {
-        $user = new Model\User($params['id']);
+        $user = Model\User::findById($params['id']);
         $this->_view->setVars(array('user' => $user));
     }
 
@@ -34,8 +34,13 @@ class UsersController extends Lib\Controller
 
     protected function _create ($params)
     {
-        $user = new Model\User();
-        $this->redirectTo(\users_path($user));
+        $user = new Model\User($params['user']);
+        if ($user->save()) {
+            $this->redirectTo(\users_path($user));
+        } else {
+            $this->_view->setVars(array('user' => $user));
+            $this->_view->setView(self::getControllerPrefix().'/new');
+        }
     }
 
     protected function _edit ($params)

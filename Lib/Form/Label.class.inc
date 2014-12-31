@@ -16,10 +16,10 @@ class Label extends Input {
     protected $_label = '';
     public function __construct($_label, $attributes = array()) {
         $this->_label = $_label;
-        parent::__construct($attributes);
+        parent::__construct($_label, '', $attributes);
     }
 
     public function render() {
-        return require(getLibBasePath() . 'View/label.phtml');
+        return eval(file_get_contents(getLibBasePath() . 'View/label.phtml'));
     }
 }

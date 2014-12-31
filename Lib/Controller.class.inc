@@ -39,7 +39,7 @@ class Controller {
         try {
             ORM\QueryManager::get()->beginTransaction();
             if (method_exists($this, '_' . $this->_action)){
-                $this->_view->setDefaultView(self::getControllerPrefix().'/'.$this->_action);
+                $this->_view->setView(self::getControllerPrefix().'/'.$this->_action);
                 $this->beforeFilter();
                 $this->{'_'.$this->_action}($params);
                 $this->afterFilter();
@@ -69,6 +69,7 @@ class Controller {
     }
 
     public function redirectTo($url) {
+        ORM\QueryManager::get()->commit();
         header("HTTP/1.1 307 Temporary Redirect");
         echo $url;
         die;

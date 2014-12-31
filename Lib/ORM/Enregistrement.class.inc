@@ -92,9 +92,10 @@ abstract class Enregistrement {
 			// Pour chaque attribut...
 			foreach (array_keys($this->valeurs) as $cle) {
 				// ... attribut=:attribut
-				if (!is_null($this->valeurs[$cle]) && !(empty($this->valeurs[$cle]) && !is_numeric($this->valeurs[$cle])))
-					$set[] = "{$cle}=:{$cle}";
-			}
+				if (!is_null($this->valeurs[$cle]) && !(empty($this->valeurs[$cle]) && !is_numeric($this->valeurs[$cle]))) {
+                    $set[] = "{$cle}=:{$cle}";
+                }
+            }
 			// Preparation de la requete
 			$res = myPDO::get()->prepare("UPDATE $_table SET " . implode(",", $set) . " WHERE $_cle_pri=:$_cle_pri");
 		} else {
@@ -125,6 +126,10 @@ abstract class Enregistrement {
 		}
 		// Execution de la requete
 		$res->execute();
+        if ($this->$_cle_pri == ''){
+            $this->$_cle_pri = myPDO::get()->lastInsertId();
+        }
+        return TRUE;
 	}
 
 	/**
@@ -146,10 +151,12 @@ abstract class Enregistrement {
 	 */
 	public function chargement($_donnees) {
 		// Pour chaque attribut, affecter la valeur si elle est presente dans le tableau
-		foreach (array_keys($this->valeurs) as $k)
-			if (array_key_exists($k, $_donnees))
-				$this->$k = $_donnees[$k];
-	}
+		foreach (array_keys($this->valeurs) as $k) {
+            if (array_key_exists($k, $_donnees)) {
+                $this->$k = $_donnees[$k];
+            }
+        }
+    }
 
 	/**
 	 * Initialisation des noms des attributs qui sont les cles du tableau des valeurs
@@ -159,9 +166,10 @@ abstract class Enregistrement {
 		// Initialisation du tableau des valeurs
 		$this->valeurs = array();
 		// Pour chaque cle passee en parametre...
-		foreach (array_keys($_cles) as $cle) // ...en faire une cle du tableau des valeurs
-			$this->valeurs[$cle] = null;
-	}
+		foreach (array_keys($_cles) as $cle) { // ...en faire une cle du tableau des valeurs
+            $this->valeurs[$cle] = null;
+        }
+    }
 
 	public function delete(){
 

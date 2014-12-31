@@ -14,7 +14,7 @@ namespace Lib\Form;
  * @author bryyce
  */
 class TextInput extends Input {
-    public function __construct($attributes = array()) {
-        parent::__construct(['type' => 'text'] + $attributes);
+    public function __construct($name, $value, $attributes = array()) {
+        parent::__construct($name, $value, ['type' => 'text'] + $attributes);
     }
 }

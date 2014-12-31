@@ -74,7 +74,7 @@ class Router {
 	public function resource($resource, $params = []) {
 		$this->match($resource . '/',		   	$resource . '#index',  	$params + array('method' => 'GET'));
 		$this->match($resource . '/new/',		$resource . '#new',		$params + array('method' => 'GET'));
-		$this->match($resource . '/new/',	 	$resource . '#create', 	$params + array('method' => 'POST'));
+		$this->match($resource . '/',           $resource . '#create', 	$params + array('method' => 'POST'));
 		$this->match($resource . '/:id/',		$resource . '#show',	$params + array('method' => 'GET'));
 		$this->match($resource . '/edit/:id/',  $resource . '#edit',	$params + array('method' => 'GET'));
 		$this->match($resource . '/:id/', 	 	$resource . '#update', 	$params + array('method' => 'PUT'));

@@ -27,7 +27,7 @@ class User extends ORM\MyEnregistrement
      * @static array
      */
     protected static $has_and_belongs_to_many = array('profiles' => array());
-
+    public $password_confirmation;
     /**
      * Ensemble des validations a effectuer avant de sauvegarder
      *    @access protected
@@ -38,4 +38,3 @@ class User extends ORM\MyEnregistrement
          'length' => array('login' => array('lt' => 5))
     );
 }
-?>

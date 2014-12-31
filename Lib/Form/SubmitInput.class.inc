@@ -14,7 +14,7 @@ namespace Lib\Form;
  * @author bryyce
  */
 class SubmitInput extends Input {
-    public function __construct($attributes = array()) {
-        parent::__construct(['type' => 'submit'] + $attributes);
+    public function __construct($name, $value, $attributes = array()) {
+        parent::__construct($name, $value, ['type' => 'submit'] + $attributes);
     }
 }

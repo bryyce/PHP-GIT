@@ -22,6 +22,7 @@ if ($argv[1] == 'migrate') {
                 )) {
                 \Lib\ORM\QueryManager::get()->beginTransaction();
                 try {
+                    require_once 'App/Script/Migration/' . $migration_file_number . '.php';
                     $class ='Migration_'.$migration_file_number;
                     $migration = new $class;
                     $migration->{$method}();

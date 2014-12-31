@@ -8,17 +8,15 @@ namespace Lib\Form;
  */
 abstract class Input {
     protected $_attributes = [];
-
-    public function __construct ($attributes = []) {
+    protected $_name;
+    protected $_value;
+    public function __construct ($name, $value, $attributes = []) {
+        $this->_name = $name;
+        $this->_value = $value;
         $this->_attributes = $attributes;
     }
 
-    public function getHtmlId () {
-        return isset($this->_attributes['id'])? $this->_attributes['id']: '';
-    }
-
-
     public function render () {
-        return require(getLibBasePath() . 'View/input.phtml');
+        return eval(file_get_contents(getLibBasePath() . 'View/input.phtml'));
     }
 }

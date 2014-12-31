@@ -13,5 +13,5 @@ $result = Router::get()->getCurrentRoute(HTTPRequest::requestURI(),HTTPRequest::
 $class = "App\\Controller\\".ucfirst($result['controller'])."Controller";
 $controller = new $class;
 $controller->setAction($result['action']);
-$controller->run($result['params']);
+$controller->run($result['params'] + ${"_".HTTPRequest::method()});
 echo round(memory_get_usage()/(1024),2)." Ko";

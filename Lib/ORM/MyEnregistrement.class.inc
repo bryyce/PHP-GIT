@@ -84,11 +84,14 @@ abstract class MyEnregistrement extends Enregistrement {
 	 *
 	 * @param <int> $_id id de l'objet a chercher dans la BDD si null un objet vide est créé
 	 */
-	public function __construct($_id = null) {
+	public function __construct($_params = []) {
 		$this->initAttributs(self::etiquettes());
-		if ($_id != null)
-			$this->lecture($_id);
-	}
+        $this->chargement($_params);
+		/*if ($_id != null) {
+            $this->lecture($_id);
+        }*/
+        
+    }
 
 	/**
 	 * Precharge tous les modèles de relations du modele de données
@@ -96,34 +99,43 @@ abstract class MyEnregistrement extends Enregistrement {
 	 */
 	public static function loadRelations() {
 		foreach (static::$has_one as $k => $v) {
-			if (!array_key_exists('primary_key', static::$has_one[$k]))
-				static::$has_one[$k]['primary_key'] = $k . '_id';
-			if (!array_key_exists('class', static::$has_one[$k]))
-				static::$has_one[$k]['class'] = 'Model\\' . ucfirst($k);
-		}
+			if (!array_key_exists('primary_key', static::$has_one[$k])) {
+                static::$has_one[$k]['primary_key'] = $k . '_id';
+            }
+            if (!array_key_exists('class', static::$has_one[$k])) {
+                static::$has_one[$k]['class'] = 'Model\\' . ucfirst($k);
+            }
+        }
 		foreach (static::$has_many as $k => $v) {
-			if (!array_key_exists('primary_key', static::$has_many[$k]))
-				static::$has_many[$k]['primary_key'] = $k . '_id';
-			if (!array_key_exists('class', static::$has_many[$k]))
-				static::$has_many[$k]['class'] = 'App\\Model\\' . ucfirst($k);
-		}
+			if (!array_key_exists('primary_key', static::$has_many[$k])) {
+                static::$has_many[$k]['primary_key'] = $k . '_id';
+            }
+            if (!array_key_exists('class', static::$has_many[$k])) {
+                static::$has_many[$k]['class'] = 'App\\Model\\' . ucfirst($k);
+            }
+        }
 		foreach (static::$has_and_belongs_to_many as $k => $v) {
 			$class = 'App\\Model\\' . ucfirst(substr($k, 0, strlen($k) - 1));
-			if (!array_key_exists('primary_key', static::$has_and_belongs_to_many[$k]))
-				static::$has_and_belongs_to_many[$k]['primary_key'] = substr($k, 0, strlen($k) - 1) . '_id';
-			if (!array_key_exists('class', static::$has_and_belongs_to_many[$k]))
-				static::$has_and_belongs_to_many[$k]['class'] = $class;
-			if (array_key_exists('master', static::$has_and_belongs_to_many[$k]) && static::$has_and_belongs_to_many[$k]['master'] == false)
-				static::$has_and_belongs_to_many[$k]['join_table'] = $class::table() . '_' . static::table();
-			else
-				static::$has_and_belongs_to_many[$k]['join_table'] = static::table() . '_' . $class::table();
-		}
+			if (!array_key_exists('primary_key', static::$has_and_belongs_to_many[$k])) {
+                static::$has_and_belongs_to_many[$k]['primary_key'] = substr($k, 0, strlen($k) - 1) . '_id';
+            }
+            if (!array_key_exists('class', static::$has_and_belongs_to_many[$k])) {
+                static::$has_and_belongs_to_many[$k]['class'] = $class;
+            }
+            if (array_key_exists('master', static::$has_and_belongs_to_many[$k]) && static::$has_and_belongs_to_many[$k]['master'] == false) {
+                static::$has_and_belongs_to_many[$k]['join_table'] = $class::table() . '_' . static::table();
+            } else {
+                static::$has_and_belongs_to_many[$k]['join_table'] = static::table() . '_' . $class::table();
+            }
+        }
 		foreach (static::$belongs_to as $k => $v) {
-			if (!array_key_exists('primary_key', static::$belongs_to[$k]))
-				static::$belongs_to[$k]['primary_key'] = static::table() . '_id';
-			if (!array_key_exists('class', static::$belongs_to[$k]))
-				static::$belongs_to[$k]['class'] = 'App\\Model\\' . ucfirst($k);
-		}
+			if (!array_key_exists('primary_key', static::$belongs_to[$k])) {
+                static::$belongs_to[$k]['primary_key'] = static::table() . '_id';
+            }
+            if (!array_key_exists('class', static::$belongs_to[$k])) {
+                static::$belongs_to[$k]['class'] = 'App\\Model\\' . ucfirst($k);
+            }
+        }
 	}
 
 	/**
@@ -180,7 +192,7 @@ abstract class MyEnregistrement extends Enregistrement {
 		// Execution de la requete avec le parametre et lecture du resultat
 		foreach (QueryManager::get()->select(static::table())->where($cond)->execute() as $record) {
 			if (!is_null($record)) {
-				$records->push(static::load($record));
+				$records->push(new static($record));
 			}
 		}
 		return $records;
@@ -201,9 +213,10 @@ abstract class MyEnregistrement extends Enregistrement {
 	 */
 	public static function first($_params = array()) {
 		$params = array();
-		foreach ($_params as $key => $value)
-			$params[] = "$key = '$value'";
-		$collection = QueryManager::get()->select(static::table())->where($params)->order('id')->limit(1)->execute();
+		foreach ($_params as $key => $value) {
+            $params[] = "$key = '$value'";
+        }
+        $collection = QueryManager::get()->select(static::table())->where($params)->order('id')->limit(1)->execute();
 		return static::load($collection->count() ? $collection->first() : array());
 	}
 
@@ -214,9 +227,10 @@ abstract class MyEnregistrement extends Enregistrement {
 	 */
 	public static function last($_params = array()) {
 		$params = array();
-		foreach ($_params as $key => $value)
-			$params[] = "$key = '$value'";
-		$collection = QueryManager::get()->select(static::table())->where($params)->order('id DESC')->limit(1)->execute();
+		foreach ($_params as $key => $value) {
+            $params[] = "$key = '$value'";
+        }
+        $collection = QueryManager::get()->select(static::table())->where($params)->order('id DESC')->limit(1)->execute();
 		return static::load($collection->count() ? $collection->first() : array());
 	}
 
@@ -229,9 +243,10 @@ abstract class MyEnregistrement extends Enregistrement {
 	 */
 	public static function count($_params = array(), $_others = '') {
 		$params = array();
-		foreach ($_params as $key => $value)
-			$params[] = "$key = '$value'";
-		$conditions = implode(' AND ', $params) . ' ' . $_others;
+		foreach ($_params as $key => $value) {
+            $params[] = "$key = '$value'";
+        }
+        $conditions = implode(' AND ', $params) . ' ' . $_others;
 		$res = QueryManager::get()->select(static::table())->where($conditions)->count()->execute();
 		// Execution de la requete avec le parametre et lecture du resultat
 		if ($res->count() > 0) {
@@ -253,17 +268,16 @@ abstract class MyEnregistrement extends Enregistrement {
 	 * @throws \Exception
 	 */
 	public static function __callStatic($method, $params) {
-		if (!preg_match('/^(find|first|last|count)By(\w+)$/', $method, $matches)) {
+		if (!\preg_match('/^(find|first|last|count)By(\w+)$/', $method, $matches)) {
 			throw new \Exception("Call to undefined method {$method}");
 		}
 
-		$criteriaKeys = explode('_And_', preg_replace('/([a-z0-9])([A-Z])/', '$1_$2', $matches[2]));
-		$criteriaKeys = array_map('strtolower', $criteriaKeys);
-		$criteriaValues = array_slice($params, 0, count($criteriaKeys));
-		$criteria = array_combine($criteriaKeys, $criteriaValues);
+		$criteriaKeys = \array_map('strtolower', \explode('_And_', \preg_replace('/([a-z0-9])([A-Z])/', '$1_$2', $matches[2])));
+		$criteriaValues = \array_slice($params, 0, \count($criteriaKeys));
+		$criteria = \array_combine($criteriaKeys, $criteriaValues);
 
-		$method = $matches[1];
-		return static::$method($criteria);
+		$methods = $matches[1];
+		return static::$methods($criteria);
 	}
 
 	/**
@@ -273,9 +287,10 @@ abstract class MyEnregistrement extends Enregistrement {
 	 */
 	public static function find($_params) {
 		$params = array();
-		foreach ($_params as $key => $value)
-			$params[] = "$key = '$value'";
-		return static::allBy(implode(" AND ", $params));
+		foreach ($_params as $key => $value) {
+            $params[] = "$key = '$value'";
+        }
+        return static::allBy(implode(" AND ", $params));
 	}
 
 	/**
@@ -286,57 +301,60 @@ abstract class MyEnregistrement extends Enregistrement {
 	 * @throws \Exception
 	 */
 	public function __get($_cle) {
-		if (array_key_exists($_cle, $this->valeurs)) // La propriete demandee est bien une cle du tableau des valeurs
-			return $this->valeurs[$_cle];
-		else if (array_key_exists($_cle, static::$has_one)) {
-			$id_assoc = static::$has_one[$_cle]['primary_key'];
-			$class = static::$has_one[$_cle]['class'];
-			if (!array_key_exists($_cle, static::$relations_elem) || static::$relations_elem[$_cle] == null) {
-				static::$relations_elem[$_cle] = new $class;
-				if ($this->$id_assoc)
-					static::$relations_elem[$_cle] = $class::first(array("id" => $this->$id_assoc));
-			}
-		}
-		else if (array_key_exists($_cle, static::$has_many)) {
-			$id_assoc = static::$has_many[$_cle]['primary_key'];
-			$class = static::$has_many[$_cle]['class'];
-			if (!array_key_exists($_cle, static::$relations_elem) || static::$relations_elem[$_cle] == null) {
-				static::$relations_elem[$_cle] = new \Collection();
-				if ($this->$id_assoc)
-					static::$relations_elem[$_cle] = $class::AllBy("id = {$this->$id_assoc}");
-			}
-		}
-		else if (array_key_exists($_cle, static::$has_and_belongs_to_many)) {
-			$id_assoc = static::getClassName() . '_id';
-			$id_assoc_2 = static::$has_and_belongs_to_many[$_cle]['primary_key'];
-			$_join_table = static::$has_and_belongs_to_many[$_cle]['join_table'];
-			$class = static::$has_and_belongs_to_many[$_cle]['class'];
-			if (!array_key_exists($_cle, static::$relations_elem) || static::$relations_elem[$_cle] == null) {
-				static::$relations_elem[$_cle] = new \Collection();
-				if ($this->get_primary_key_value()) {
-					// Execution de la requete avec le parametre et lecture du resultat
-					$enregistrements =
-							  QueryManager::get()->
-							  select($class::table())->
-							  join($_join_table, array($id_assoc_2, static::cle_pri()))->
-							  where($_join_table . '.' . $id_assoc . ' = ' . $this->get_primary_key_value())
-							  ->execute();
-					foreach ($enregistrements as $enregistrement)
-						static::$relations_elem[$_cle]->push($class::load($enregistrement));
-				}
-			}
-		} else if (array_key_exists($_cle, static::$belongs_to)) {
-			$id_assoc = static::$belongs_to[$_cle]['primary_key'];
-			$class = static::$belongs_to[$_cle]['class'];
-			if (!array_key_exists($_cle, static::$relations_elem) || static::$relations_elem[$_cle] == null) {
-				static::$relations_elem[$_cle] = new $class;
-				if ($this->get_primary_key_value())
-					static::$relations_elem[$_cle] = $class::first("$id_assoc = {$this->get_primary_key_value()}");
-			}
-		}
-		else
-			throw new \Exception("Attribut '$_cle' inconnu dans '" . get_class($this) . "'");
-		return static::$relations_elem[$_cle];
+		if (array_key_exists($_cle, $this->valeurs)) { // La propriete demandee est bien une cle du tableau des valeurs
+            return $this->valeurs[$_cle];
+        } else if (array_key_exists($_cle, static::$has_one)) {
+            $id_assoc = static::$has_one[$_cle]['primary_key'];
+            $class = static::$has_one[$_cle]['class'];
+            if (!array_key_exists($_cle, static::$relations_elem) || static::$relations_elem[$_cle] == null) {
+                static::$relations_elem[$_cle] = new $class;
+                if ($this->$id_assoc) {
+                    static::$relations_elem[$_cle] = $class::first(array("id" => $this->$id_assoc));
+                }
+            }
+        }
+        else if (array_key_exists($_cle, static::$has_many)) {
+            $id_assoc = static::$has_many[$_cle]['primary_key'];
+            $class = static::$has_many[$_cle]['class'];
+            if (!array_key_exists($_cle, static::$relations_elem) || static::$relations_elem[$_cle] == null) {
+                static::$relations_elem[$_cle] = new \Collection();
+                if ($this->$id_assoc) {
+                    static::$relations_elem[$_cle] = $class::AllBy("id = {$this->$id_assoc}");
+                }
+            }
+        }
+        else if (array_key_exists($_cle, static::$has_and_belongs_to_many)) {
+            $id_assoc = static::getClassName() . '_id';
+            $id_assoc_2 = static::$has_and_belongs_to_many[$_cle]['primary_key'];
+            $_join_table = static::$has_and_belongs_to_many[$_cle]['join_table'];
+            $class = static::$has_and_belongs_to_many[$_cle]['class'];
+            if (!array_key_exists($_cle, static::$relations_elem) || static::$relations_elem[$_cle] == null) {
+                static::$relations_elem[$_cle] = new \Collection();
+                if ($this->get_primary_key_value()) {
+                    // Execution de la requete avec le parametre et lecture du resultat
+                    $enregistrements = QueryManager::get()->
+                            select($class::table())->
+                            join($_join_table, array($id_assoc_2, static::cle_pri()))->
+                            where($_join_table . '.' . $id_assoc . ' = ' . $this->get_primary_key_value())
+                            ->execute();
+                    foreach ($enregistrements as $enregistrement) {
+                        static::$relations_elem[$_cle]->push($class::load($enregistrement));
+                    }
+                }
+            }
+        } else if (array_key_exists($_cle, static::$belongs_to)) {
+            $id_assoc = static::$belongs_to[$_cle]['primary_key'];
+            $class = static::$belongs_to[$_cle]['class'];
+            if (!array_key_exists($_cle, static::$relations_elem) || static::$relations_elem[$_cle] == null) {
+                static::$relations_elem[$_cle] = new $class;
+                if ($this->get_primary_key_value()) {
+                    static::$relations_elem[$_cle] = $class::first("$id_assoc = {$this->get_primary_key_value()}");
+                }
+            }
+        } else {
+            throw new \Exception("Attribut '$_cle' inconnu dans '" . get_class($this) . "'");
+        }
+        return static::$relations_elem[$_cle];
 	}
 
 	/**
@@ -348,11 +366,12 @@ abstract class MyEnregistrement extends Enregistrement {
 	 * @throws \Exception
 	 */
 	public function __set($_cle, $_val){
-		if (array_key_exists($_cle, $this->valeurs)) // La propriete demandee est bien une cle du tableau des valeurs
-			return $this->valeurs[$_cle] = $_val;
-		elseif (array_key_exists($_cle, static::$relations_elem))
-			return static::$relations_elem[$_cle] = $_val;
-		throw new \Exception("Attribut '$_cle' inconnu dans '" . get_class($this) . "'");
+		if (array_key_exists($_cle, $this->valeurs)) { // La propriete demandee est bien une cle du tableau des valeurs
+            return $this->valeurs[$_cle] = $_val;
+        } elseif (array_key_exists($_cle, static::$relations_elem)) {
+            return static::$relations_elem[$_cle] = $_val;
+        }
+        throw new \Exception("Attribut '$_cle' inconnu dans '" . get_class($this) . "'");
 	}
 
 	/**
@@ -362,11 +381,12 @@ abstract class MyEnregistrement extends Enregistrement {
 	 * @throws \Exception
 	 */
 	public function __isset($_cle) {
-		if (array_key_exists($_cle, $this->valeurs)) // La propriete demandee est bien une cle du tableau des valeurs
-			return isset($this->valeurs[$_cle]);
-		elseif (array_key_exists($_cle, static::$relations_elem))
-			isset(static::$relations_elem[$_cle]);
-		throw new \Exception("Attribut '$_cle' inconnu dans '" . get_class($this) . "'");
+		if (array_key_exists($_cle, $this->valeurs)) { // La propriete demandee est bien une cle du tableau des valeurs
+            return isset($this->valeurs[$_cle]);
+        } elseif (array_key_exists($_cle, static::$relations_elem)) {
+            isset(static::$relations_elem[$_cle]);
+        }
+        throw new \Exception("Attribut '$_cle' inconnu dans '" . get_class($this) . "'");
 	}
 
 	/**
@@ -376,11 +396,12 @@ abstract class MyEnregistrement extends Enregistrement {
 	 * @throws \Exception
 	 */
 	public function __unset($_cle /** Nom de la propriete */) {
-		if (array_key_exists($_cle, $this->valeurs))// La propriete demandee est bien une cle du tableau des valeurs
-			return $this->valeurs[$_cle] = null;
-		elseif (array_key_exists($_cle, static::$relations_elem))
-			unset(static::$relations_elem[$_cle]);
-		throw new \Exception("Attribut '$_cle' inconnu dans '" . get_class($this) . "'");
+		if (array_key_exists($_cle, $this->valeurs)) {// La propriete demandee est bien une cle du tableau des valeurs
+            return $this->valeurs[$_cle] = null;
+        } elseif (array_key_exists($_cle, static::$relations_elem)) {
+            unset(static::$relations_elem[$_cle]);
+        }
+        throw new \Exception("Attribut '$_cle' inconnu dans '" . get_class($this) . "'");
 	}
 
 	/**
@@ -388,12 +409,12 @@ abstract class MyEnregistrement extends Enregistrement {
 	 * @param array $attributes tous les attibuts à charger
 	 * @return \ORM\class
 	 */
-	public static function load($attributes) {
+	/*public static function load($attributes) {
 		$class = get_called_class();
 		$record = new $class();
 		$record->chargement($attributes);
 		return $record;
-	}
+	}*/
 
 	/**
 	 *	Sauvegarde de l'objet en base de données si celui ci à passé les validations
