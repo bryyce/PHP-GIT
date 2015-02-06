@@ -47,6 +47,11 @@ class HTTPRequest
 
 	public static function requestURI()
 	{
-		return $_SERVER['REQUEST_URI'][0] == '/' ? substr($_SERVER['REQUEST_URI'], 1):$_SERVER['REQUEST_URI'];
+        return strtok($_SERVER['REQUEST_URI'][0] == '/' ? substr($_SERVER['REQUEST_URI'], 1):$_SERVER['REQUEST_URI'], '?');
 	}
+    
+    public static function getParams() 
+    {
+        return "_". (in_array(self::method(), array('PUT', 'DELETE'))? 'POST' : self::method());
+    }
 }

@@ -49,7 +49,6 @@ class Router {
 	}
 
 	public function getCurrentRoute($request_url, $request_method = 'GET'){
-		$elements = explode('/', $request_url);
 		foreach ($this->_routes as $route) {
 			if ($request_method == $route->Get('method')) {
 				$route_name = preg_replace('/\:([a-z]*)/', '([a-zA-Z0-9]*)', $route->Get('name'));

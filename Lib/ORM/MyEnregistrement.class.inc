@@ -294,6 +294,15 @@ abstract class MyEnregistrement extends Enregistrement {
 	}
 
 	/**
+	 *	Recherche tous les éléments d'une base de données en fonction d'un tableau de paramètres
+	 * @param array $_params les paramètres de recherchee
+	 * @return \Collection les données trouvées
+	 */
+	public static function findById($_id) {
+        return static::allBy("id = " . $_id)->first();
+	}
+
+	/**
 	 * Surcharge de __get pour donner acces aux valeurs sous la forme $e->attribut
 	 *
 	 * @param type $_cle Nom de la propriete

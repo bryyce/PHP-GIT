@@ -86,7 +86,7 @@ abstract class Enregistrement {
 		$_table = $this->table();
 		$_cle_pri = $this->cle_pri();
 
-		if (static::count(array(static::cle_pri() => $this->$_cle_pri)) == 1) {
+		if (static::count(array(static::cle_pri() => (int)$this->$_cle_pri)) == 1) {
 			// l'Enregistrement existe => UPDATE
 			// Constitution de la requete
 			// Pour chaque attribut...

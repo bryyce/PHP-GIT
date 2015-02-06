@@ -35,27 +35,27 @@ class Form {
     }
 
     public function label($label, $params = []) {
-        return (new Label($label, $params))->render();
+        return (new Label($label, $params + array("class" => "control-label")))->render();
     }
     
     public function text($name, $value, $params = []) {
-        return (new TextInput($this->formatInputName($name), $value, $params))->render();
+        return (new TextInput($this->formatInputName($name), $value, $params + array("class" => "form-control")))->render();
     }
     
     public function password($name, $value, $params = []) {
-        return (new PasswordInput($this->formatInputName($name), $value, $params))->render();
+        return (new PasswordInput($this->formatInputName($name), $value, $params + array("class" => "form-control")))->render();
     }
     
     public function radio($name, $value, $params = []) {
-        return (new RadioInput($this->formatInputName($name), $value, $params))->render();
+        return (new RadioInput($this->formatInputName($name), $value, $params + array("class" => "form-control")))->render();
     }
     
     public function checkbox($name, $value, $params = []) {
-        return (new CheckboxInput($this->formatInputName($name), $value, $params))->render();
+        return (new CheckboxInput($this->formatInputName($name), $value, $params + array("class" => "form-control")))->render();
     }
     
     public function submit($name, $value, $params = []) {
-        return (new SubmitInput($name, $value, $params))->render();
+        return (new SubmitInput($name, $value, $params + array("class" => "btn btn-default")))->render();
     }
     
     private function formatInputName($name) {

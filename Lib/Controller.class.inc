@@ -47,11 +47,12 @@ class Controller {
                 ORM\QueryManager::get()->commit();
             } else {
                 header("HTTP/1.1 404 Not Found");
+                echo 'Not Found : Unknown method';
             }
         } catch(\Exception\NotFoundException $e) {
             ORM\QueryManager::get()->rollback();
             header("HTTP/1.1 404 Not Found");
-            echo 'Not Found';
+            echo 'Not Found : ' . $e->getMessage();
             die;
         }
     }

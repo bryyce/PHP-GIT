@@ -17,3 +17,24 @@ function form ($name, $url, $method = 'POST', $params = []) {
     yield $form;
     echo '</form>';
 }
+
+function i18n ($string) {
+    return $string;
+}
+
+function h($string) {
+    return htmlentities($string);
+}
+
+function show_errors($model) {
+    if (count($model->errors) > 0) {
+        echo '<div class="alert alert-danger" role="alert">';
+        echo '<a href="#" class="close" data-dismiss="alert">&times;</a><strong>There are some errors</strong>';
+        echo "<ul>";
+        foreach ($model->errors as $error) {
+            echo "<li class='error'>$error</li>";
+        }
+        echo "</ul>";
+        echo '</div>';
+    }
+}

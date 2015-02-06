@@ -56,18 +56,18 @@ class Validation {
                     if(\is_array($values[$value])) {
                         $size = count($values[$value]);
                         if (strlen($entity->$value) < $size) {
-                            $entity->errors[$value] = 'is too long (< ' . $size . ')';
+                            $entity->errors[$value] = 'is too short (< ' . $size . ')';
                         }
                     } else {
                         switch(key($values[$value])){
                             case 'gt':
                                 if (strlen($entity->$value) < $values[$value]['gt']) {
-                                    $entity->errors[$value] = 'is too long (< ' . $values[$value]['gt'] . ')';
+                                    $entity->errors[$value] = 'is too short (< ' . $values[$value]['gt'] . ')';
                                 }
                                 break;
                             case 'lt':
                                 if (strlen($entity->$value) > $values[$value]['lt']) {
-                                    $entity->errors[$value] = 'is too short (> ' . $values[$value]['lt'] . ')';
+                                    $entity->errors[$value] = 'is too long (> ' . $values[$value]['lt'] . ')';
                                 }
                                 break;
                             case 'between':
