@@ -1,4 +1,4 @@
-php_flag display_errors On
+#php_flag display_errors On
 #php_value auto_prepend_file "/var/www/PHP-GIT/include.php"
 
 RewriteEngine On
