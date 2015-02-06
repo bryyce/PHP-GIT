@@ -1,3 +1,4 @@
+<?php show_errors($user) ?>
 <?php foreach(form('user', users_path()) as $form) { ?>
 <table class='table'>
     <tr>
@@ -12,7 +13,7 @@
         <td><?= $form->label('password') ?></td>
         <td><?= $form->password('password', $user->password) ?></td>
     </tr>
-    <tr>
+    <tr class="form-group has-error">
         <td><?= $form->label('password_confirmation') ?></td>
         <td><?= $form->password('password_confirmation', $user->password_confirmation) ?></td>
     </tr>

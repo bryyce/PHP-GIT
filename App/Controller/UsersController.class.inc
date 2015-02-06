@@ -45,19 +45,19 @@ class UsersController extends Lib\Controller
 
     protected function _edit ($params)
     {
-        $user = new Model\User($params['id']);
+        $user =  Model\User::findById($params['id']);
         $this->_view->setVars(array('user' => $user));
     }
 
     protected function _update ($params)
     {
-        $user = new Model\User($params['id']);
+        $user =  Model\User::findById($params['id']);
         $this->redirectTo(\users_path($user));
     }
 
     protected function _delete ($params)
     {
-        $user = new Model\User($params['id']);
+        $user =  Model\User::findById($params['id']);
         $user->delete();
         $this->redirectTo(\users_path());
     }
