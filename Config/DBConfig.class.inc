@@ -27,6 +27,7 @@ class DBConfig {
 	private static $tables = array(
 		 'user' => 'users',
 		 'profile' => 'profiles',
+		 'point' => 'points',
 	);
 
 	/**
@@ -36,16 +37,21 @@ class DBConfig {
 	 * @var array
 	 */
 	private static $fields = array(
-		 'users' =>
-		 array('id' => 'id',
+		'users' =>
+		array('id' => 'id',
 			  'login' => "login",
 			  'mail' => 'e-mail',
 			  'password' => 'mot de passe',
 			  'salt' => 'salt',
 			  'created_at' => 'crée le',
 			  'updated_at' => 'mis à jour le'
-		 )
-		 ,
+		),
+		'points' => array(
+			'id' => 'id',
+			'latitude' => 'latitude',
+			'longitude' => 'longitude',
+			'datetime' => 'date',
+		),
 		 'profiles' =>
 		 array('id' => 'id',
 			  'name' => 'nom',

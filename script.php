@@ -1,11 +1,8 @@
 <?php
-
-var_dump($argv);
 require_once 'include.php';
 if ($argv[1] == 'migrate') {
     $schema = json_decode(file_get_contents("/home/bryyce/PHP-GIT/Config/schema.json"), TRUE);
     $target_version = isset($argv[2])? (int)str_replace('VERSION=', '', $argv[2]) :9999999999999999999999999999;
-    (int) $schema['version'] ;
     $method = (int) $schema['version'] < $target_version  ? 'up' : 'down';
     $files = scandir(getAppBasePath() . 'Script/Migration/', $method == 'down');
     foreach ($files as $id => $filename) {
@@ -31,7 +28,6 @@ if ($argv[1] == 'migrate') {
                         $schema['version'] = $migration_file_number;
                     } else {
                         if (isset($files[$id + 1]) && strpos($files[$id + 1], '.php') > 0) {
-                            echo $files[$id];
                             $schema['version'] = explode('.php', $files[$id])[0];
                         } else {
                             $schema['version'] =  -1;

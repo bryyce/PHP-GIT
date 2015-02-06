@@ -22,9 +22,9 @@ class Validation {
      * Fonction qui valide l'enregistrement en fonction de paramêtres définis
      *
      * @static
-     * @param string	$entity		le nom de l'entité à valider
-     * @param array	$validation les différentes validations
-     * @param string $id				le nom de la clé primaire
+     * @param string    $entity        le nom de l'entité à valider
+     * @param array    $validation les différentes validations
+     * @param string $id                le nom de la clé primaire
      * @return boolean renvoie TRUE si toutes les validations ont été passées avec succès
      */
     public static function validate($entity, $validation, $id) {

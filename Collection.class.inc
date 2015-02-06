@@ -2,7 +2,7 @@
 
 /**
  * Collection.class file
- * @filesource ./Collection.class 
+ * @filesource ./Collection.class
  * @package		\
  */
 
@@ -11,10 +11,10 @@
  * @package		\
  * @category	Class
  *
- * @author		bryyce bric.robin@gmail.com 
+ * @author		bryyce bric.robin@gmail.com
  * @license		http://www.gnu.org/copyleft/gpl.html GNU General Public License
  * @link			http://www.bryyce.fr/
- * @implement Iterator, ArrayAccess  
+ * @implement Iterator, ArrayAccess
  */
 class Collection implements ArrayAccess, Iterator {
 
@@ -33,7 +33,7 @@ class Collection implements ArrayAccess, Iterator {
 	private $current_index = 0;
 
 	/**
-	 * Constructeur 
+	 * Constructeur
 	 * @param array $array le tableau qui servira a initialiser la collection
 	 */
 	public function __construct(array $array = array()) {
@@ -50,7 +50,7 @@ class Collection implements ArrayAccess, Iterator {
 
 	/**
 	 * Supprime le dernier élément de la collection
-	 * @return mixed Retourne la dernière valeur de la collection. Si la collection est vide, NULL sera retourné.  
+	 * @return mixed Retourne la dernière valeur de la collection. Si la collection est vide, NULL sera retourné.
 	 */
 	public function pop() {
 		return array_pop($this->collection);
@@ -104,7 +104,7 @@ class Collection implements ArrayAccess, Iterator {
 	}
 
 	/**
-	 * Replace le curseur à  zero 
+	 * Replace le curseur à  zero
 	 */
 	public function reset() {
 		$this->current_index = 0;
@@ -124,7 +124,7 @@ class Collection implements ArrayAccess, Iterator {
 	}
 
 	/**
-	 * Destruction de l'objet collection 
+	 * Destruction de l'objet collection
 	 */
 	public function __destruct() {
 		unset($this->collection);
@@ -132,10 +132,10 @@ class Collection implements ArrayAccess, Iterator {
 
 	/**
 	 * 	Surcharge de l'operateur $array[X];
-	 * 
+	 *
 	 * @see ArrayAccess::offsetGet($offset)
 	 * @param mixed $offset la clé recherchée
-	 * @return mixed l'élément associé à  la clé 
+	 * @return mixed l'élément associé à  la clé
 	 */
 	public function offsetGet($offset) {
 		return $this->collection[$offset];
@@ -143,7 +143,7 @@ class Collection implements ArrayAccess, Iterator {
 
 	/**
 	 * 	Recherche si la clé existe
-	 * 
+	 *
 	 * @see ArrayAccess::offsetExists($offset)
 	 * @param mixed $offset la clé recherchée
 	 * @return boolean retourne TRUE s'il existe une clé du nom dans la collection
@@ -154,7 +154,7 @@ class Collection implements ArrayAccess, Iterator {
 
 	/**
 	 * Associe une clé a une valeur
-	 * 
+	 *
 	 * @see ArrayAccess::offsetSet($offset, $value)
 	 * @param mixed $offset la clé recherchée
 	 * @param mixed $value la valeur à  associer
@@ -166,7 +166,7 @@ class Collection implements ArrayAccess, Iterator {
 
 	/**
 	 * Detruit la valeur dans la collection
-	 * 
+	 *
 	 * @see ArrayAccess::offsetUnset($offset)
 	 * @param mixed $offset la clé recherchée
 	 * @return boolean retourne TRUE s'il existe une clé du nom dans la collection
@@ -176,7 +176,7 @@ class Collection implements ArrayAccess, Iterator {
 	}
 
 	/**
-	 * Replace le curseur de la collection au debut de celle-ci 
+	 * Replace le curseur de la collection au debut de celle-ci
 	 */
 	public function rewind() {
 		reset($this->collection);
@@ -184,7 +184,7 @@ class Collection implements ArrayAccess, Iterator {
 
 	/**
 	 * 	Retourne l'élément courant de la collection
-	 * @return mixed l'élément courant de la collection 
+	 * @return mixed l'élément courant de la collection
 	 */
 	public function current() {
 		return current($this->collection);
@@ -192,7 +192,7 @@ class Collection implements ArrayAccess, Iterator {
 
 	/**
 	 * 	Retourne la clé de l'élément courant dans la collection
-	 * @return mixed la clé de l'élémént courant 
+	 * @return mixed la clé de l'élémént courant
 	 */
 	public function key() {
 		return key($this->collection);
@@ -208,13 +208,20 @@ class Collection implements ArrayAccess, Iterator {
 
 	/**
 	 * 	Y'a t'il encore un élément dans la collection
-	 * @return boolean retourne TRUE s'il existe encore un element 
+	 * @return boolean retourne TRUE s'il existe encore un element
 	 */
 	public function valid() {
 		$key = key($this->collection);
 		return ($key !== NULL && $key !== FALSE);
 	}
 
+	public function toJson() {
+		$res = [];
+		foreach ($this->collection as $key => $value) {
+			$res[]= $value->toJson();
+		}
+		return '[' . join(',', $res ) . ']';
+	}
 }
 
 ?>
