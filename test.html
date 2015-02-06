@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style type="text/css">
+      html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
+    </style>
+    <script type="text/javascript" src="http://localhost/runner.js"></script>
+    <script type="text/javascript">
+
+      var map;
+      var runners = new Array();
+      var NB_RUNNER = 10;
+      var startDate = new Date();
+      var openedWindow = undefined;
+      function initialize() {
+
+        var mapOptions = {
+          zoom: 18,
+          mapTypeId: google.maps.MapTypeId.HYBRID,
+          center: {lat:49.2534, lng: 4.033}
+        };
+        map = new google.maps.Map(document.getElementById('map-canvas'),
+            mapOptions);
+        map.setTilt(45)
+        for (i = 0; i < NB_RUNNER; i++) {
+          runners[i] = new Runner("test" + i, '#'+Math.floor(Math.random()*16777215).toString(16));
+          runners[i].addPoint(49.2534, 4.033, new Date());
+          var runner = runners[i];
+
+          runners[i].marker = new google.maps.Marker({
+            position: {lat:runners[i].currentLat, lng: runners[i].currentLng},
+            map: map,
+            title: "Coureur " + runners[i].name,
+            runner: runners[i]
+          });
+          runners[i].infowindow = new google.maps.InfoWindow({
+              content: runners[i].toString()
+            });
+          google.maps.event.addListener(runners[i].marker, 'click', function() {
+            if (openedWindow != undefined) {
+              openedWindow.close();
+            }
+            openedWindow = this.get('runner').infowindow;
+            this.get('runner').infowindow.open(this.get('map'), this);
+          });
+          runners[i].line = new google.maps.Polyline({
+            path: runners[i].points,
+            geodesic: true,
+            strokeColor: runners[i].color,
+            map: map,
+            strokeOpacity: 1.0,
+            strokeWeight: 2
+          });
+        }
+        setInterval(MoveMarker,100)
+      }
+
+      function loadScript() {
+        var script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCLugUQetPtAJ69p48ZmNLh-eOPTWTmElo&v=3.exp&' +
+            'callback=initialize';
+        document.body.appendChild(script);
+      }
+
+      function MoveMarker() {
+
+        for (i = 0; i < NB_RUNNER; i++) {
+          delta_lat = ((Math.random() - 0.5)/10000)
+          delta_lng = ((Math.random() - 0.5)/10000)
+          runners[i].addPoint(runners[i].currentLat + delta_lat, runners[i].currentLng + delta_lng, new Date());
+          runners[i].marker.setPosition({lat:runners[i].currentLat, lng: runners[i].currentLng});
+          runners[i].line.setPath(runners[i].points);
+          runners[i].infowindow.setContent(runners[i].toString())
+        }
+        // if (!map.getBounds().contains(marker.getPosition()))
+        //  map.setCenter(marker.getPosition());
+
+      }
+
+      window.onload = loadScript;
+    </script>
+  </head>
+  <body>
+<div id="map-canvas"></div>
+  </body>
+</html>

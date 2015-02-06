@@ -1,0 +1,24 @@
+<?php foreach(form('user', users_path()) as $form) { ?>
+<table class='table'>
+    <tr>
+        <td><?= $form->label('login') ?></td>
+        <td><?= $form->text('login', $user->login) ?></td>
+    </tr>
+    <tr>
+        <td><?= $form->label('email') ?></td>
+        <td><?= $form->text('email', $user->mail) ?></td>
+    </tr>
+    <tr>
+        <td><?= $form->label('password') ?></td>
+        <td><?= $form->password('password', $user->password) ?></td>
+    </tr>
+    <tr>
+        <td><?= $form->label('password_confirmation') ?></td>
+        <td><?= $form->password('password_confirmation', $user->password_confirmation) ?></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><?= $form->submit('submit', 'create') ?></td>
+    </tr>
+</table>
+<?php } ?>
