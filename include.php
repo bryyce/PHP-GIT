@@ -23,7 +23,7 @@ function exceptionHandler($exception) {
     echo "</pre>\n";
 }
 function getBasePath() {
-    return '/var/www/PHP-GIT/';
+    return '/app/';
 }
 function getAppBasePath(){
     return getBasePath() . 'App/';
