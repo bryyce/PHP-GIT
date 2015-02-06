@@ -36,7 +36,6 @@ class PointsController extends Lib\Controller
 
     protected function _create ($params)
     {
-        print_r($params);
         print_r($params['points']);
         print_r(json_decode($params['points']));
         print_r(json_decode($params['points'], TRUE));
