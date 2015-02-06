@@ -1,7 +1,8 @@
 php_flag display_errors On
-php_value auto_prepend_file "/var/www/PHP-GIT/include.php"
+#php_value auto_prepend_file "/var/www/PHP-GIT/include.php"
 
 RewriteEngine On
-RewriteRule (.*).js $1.js [L]
 RewriteRule (.*).css $1.css [L]
+RewriteRule (.*).js $1.js [L]
+RewriteRule (.*).html $1.html [L]
 RewriteRule ^.*$ index.php [NC,L]
