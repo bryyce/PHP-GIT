@@ -36,9 +36,9 @@ class PointsController extends Lib\Controller
 
     protected function _create ($params)
     {
-        print_r($params['points']);
-        print_r(json_decode($params['points']));
-        print_r(json_decode($params['points'], TRUE));
+        var_dump($params['points']);
+        var_dump(json_decode($params['points']));
+        var_dump(json_decode($params['points'], TRUE));
         $points_data = json_decode($params['points'], TRUE);
         foreach ($points_data as $point_data) {
             $point_data['datetime'] = date('Y-m-d H:i:s.u', $point_data['datetime']);
