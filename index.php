@@ -15,7 +15,7 @@ if (($result = Router::get()->getCurrentRoute(HTTPRequest::requestURI(),HTTPRequ
     $controller = new $class;
     $controller->setAction($result['action']);
     //echo filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
-    $controller->run($result['params'] + ${HTTPRequest::getParams()});
+    $controller->run($result['params'] + HTTPRequest::postData() + HTTPRequest::getData()/* ${HTTPRequest::getParams()}*/);
    // echo round(memory_get_usage()/(1024),2)." Ko";
 } else {
     echo 'ici';
