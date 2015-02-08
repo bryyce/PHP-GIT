@@ -1,4 +1,4 @@
-var NB_RUNNER = 50;
+var NB_RUNNER = 1;
 var MAP_OPTIONS;
 
 var Run = function () {
@@ -13,16 +13,28 @@ Run.prototype.launch = function() {
   for (i = 0; i < NB_RUNNER; i++) {
     this.runners[i] = new Runner("test " + i, 49.2534, 4.033, new Date(), '#'+Math.floor(Math.random()*16777215).toString(16));
   }
-  var that = this;
-  setInterval(function () { that.moveMarker() }, 10)
+  this.getPoints();
 };
 
-Run.prototype.moveMarker = function () {
-  for (i = 0; i < NB_RUNNER; i++) {
+Run.prototype.getPoints = function () {
+  /*for (i = 0; i < NB_RUNNER; i++) {
     delta_lat = ((Math.random() - 0.5)/10000)
     delta_lng = ((Math.random() - 0.5)/10000)
     this.runners[i].addPoint(this.runners[i].currentLat + delta_lat, this.runners[i].currentLng + delta_lng, new Date());
-  }
+  }*/
+  var that = this;
+  $.getJSON("http://bryyce.herokuapp.com/points/", function(points) {
+    for (i = 0; i < NB_RUNNER; i++) {
+		delta_lat = 7.2538 +((Math.random() - 0.5)/1000)
+		delta_lng = 0.0343 + ((Math.random() - 0.5)/1000)
+		//for(j = 0; j < points.length; j++) {
+			//console.log(points[j = 0]);
+			j = 0;
+			run.runners[i].addPoint(points[j].lat*1 + delta_lat, points[j].lng*1 + delta_lng, points[j].datetime);
+		//}
+	}
+	setTimeout(run.getPoints, 100);
+  });
   // if (!map.getBounds().contains(marker.getPosition()))
   //  map.setCenter(marker.getPosition());
 }

@@ -5,6 +5,7 @@ var Runner = function (_name, _lat, _lng, _date, _color) {
   this.currentLat = _lat;
   this.currentLng = _lng;
   this.time = _date;
+  this.date = _date;
   this.marker = undefined;
   this.line = undefined;
   this.infowindow = undefined;
@@ -47,7 +48,8 @@ Runner.prototype.addPoint = function(lat, lng, time) {
   this.points.push({lat: lat, lng: lng});
   this.currentLat = lat;
   this.currentLng = lng;
-  this.time = time;
+  this.time = new Date(time).getTime();
+  this.date = time;
   this.updatePosition();
 };
 
@@ -66,5 +68,5 @@ Runner.prototype.toString = function() {
   return "<h3>Coureur " + this.name + "</h3>" +
         "<div><b>Latitude : </b>" + this.currentLat + "</div>" +
         "<div><b>Longitude : </b>" + this.currentLng + "</div>" +
-        "<div><b>Dernier point : </b>" + (pad + this.time.getDay()).slice(-pad.length)  + "/" + (pad + this.time.getMonth()).slice(-pad.length)  + "/" + this.time.getFullYear()  + " "  + this.time.toLocaleTimeString() + "</div>";
+        "<div><b>Dernier point : </b>" + this.date + "</div>";
 };
