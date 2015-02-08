@@ -35,7 +35,7 @@ class Point extends ORM\MyEnregistrement {
      */
     #protected static $has_and_belongs_to_many = array('users' => array('master' => false));
     public function toJson(){
-      return '{lat:'. $this->latitude .',lng:'. $this->longitude .',date:'. $this->datetime .'}';
+      return '{"lat":'. $this->latitude .',"lng":'. $this->longitude .',"date":'. $this->datetime .'}';
     }
 }
 
