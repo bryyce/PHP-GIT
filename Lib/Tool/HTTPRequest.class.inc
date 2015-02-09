@@ -22,7 +22,7 @@ class HTTPRequest
 
     public static function getData($key)
     {
-        return isset($_GET[$key]) ? $_GET[$key] : null;
+        return isset($_GET[$key]) ? $_GET[$key] : array();
     }
 
     public static function getExists($key)
@@ -37,7 +37,7 @@ class HTTPRequest
 
     public static function postData($key)
     {
-        return isset($_POST[$key]) ? $_POST[$key] : null;
+        return isset($_POST[$key]) ? $_POST[$key] : array();
     }
 
     public static function postExists($key)

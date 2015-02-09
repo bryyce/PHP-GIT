@@ -22,7 +22,6 @@ Run.prototype.getPoints = function () {
     delta_lng = ((Math.random() - 0.5)/10000)
     this.runners[i].addPoint(this.runners[i].currentLat + delta_lat, this.runners[i].currentLng + delta_lng, new Date());
   }*/
-  var that = this;
   $.getJSON("./points/", function(points) {
     for (i = 0; i < NB_RUNNER; i++) {
         delta_lat =0; ((Math.random() - 0.5)/1000)
