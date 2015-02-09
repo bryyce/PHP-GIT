@@ -25,13 +25,13 @@ Run.prototype.getPoints = function () {
   var that = this;
   $.getJSON("./points/", function(points) {
     for (i = 0; i < NB_RUNNER; i++) {
-		delta_lat =0; ((Math.random() - 0.5)/1000)
-		delta_lng =0; ((Math.random() - 0.5)/1000)
-		for(j = 0; j < points.length; j++) {
-			  run.runners[i].addPoint(points[j].lat*1 + delta_lat, points[j].lng*1 + delta_lng, points[j].date);
-		}
-	}
-	//setTimeout(run.getPoints, 100);
+        delta_lat =0; ((Math.random() - 0.5)/1000)
+        delta_lng =0; ((Math.random() - 0.5)/1000)
+        for(j = 0; j < points.length; j++) {
+              run.runners[i].addPoint(points[j].lat*1 + delta_lat, points[j].lng*1 + delta_lng, points[j].date);
+        }
+    }
+    //setTimeout(run.getPoints, 100);
   });
  /* if (!map.getBounds().contains(marker.getPosition()))
     map.setCenter(marker.getPosition());*/
