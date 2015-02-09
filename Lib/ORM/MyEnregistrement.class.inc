@@ -79,6 +79,8 @@ abstract class MyEnregistrement extends Enregistrement {
      */
     protected static $validate = array();
 
+    private static $order = NULL;
+
     /**
      * Constructeur d'enregistrement
      *
@@ -190,7 +192,7 @@ abstract class MyEnregistrement extends Enregistrement {
     protected static function allBy($cond = "") {
         $records = new \Collection();
         // Execution de la requete avec le parametre et lecture du resultat
-        foreach (QueryManager::get()->select(static::table())->where($cond)->execute() as $record) {
+        foreach (QueryManager::get()->select(static::table())->where($cond)->order(self::$order)->execute() as $record) {
             if (!is_null($record)) {
                 $records->push(new static($record));
             }

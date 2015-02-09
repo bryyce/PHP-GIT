@@ -16,7 +16,10 @@ class PointsController extends Lib\Controller
 {
     protected function _index ()
     {
-        echo Model\Point::find(['viewed' => 'FALSE'])->toJson();
+		header('Access-Control-Allow-Origin: *');
+		header('Content-Type: application/json');
+        //echo Model\Point::find(['viewed' => 'FALSE'])->toJson();
+        echo Model\Point::all()->toJson();
         $res = Lib\ORM\myPDO::get()->prepare("UPDATE points SET viewed = TRUE WHERE viewed = FALSE");
         $res->execute();
         $this->_is_rendered = TRUE;

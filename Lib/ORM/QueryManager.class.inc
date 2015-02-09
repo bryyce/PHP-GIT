@@ -132,10 +132,12 @@ class QueryManager {
 	 * @return \ORM\QueryManager l'instance (pour la chainabilité)
 	 */
 	public function order($columns) {
-		if (!is_array($columns)) {
-            $columns = array($columns);
-        }
-        $this->order = 'ORDER BY ' . join(', ', $columns);
+    if (!is_null($columns)) {
+      if (!is_array($columns)) {
+        $columns = array($columns);
+      }
+      $this->order = 'ORDER BY ' . join(', ', $columns);
+    }
 		return $this;
 	}
 
@@ -215,13 +217,13 @@ class QueryManager {
 	}
 
     /**
-     * 
+     *
      * @param type $db_name
      */
     public function createDatabase($db_name) {
         myPDO::get()->prepare('CREATE DATABASE ' . $db_name)->execute();
     }
-    
+
     public function createTable($table_name, $columns, $engine, $options){
         $_columns = [];
         foreach ($columns as $column) {
@@ -233,11 +235,11 @@ class QueryManager {
                 . " ) Engine $engine";
         myPDO::get()->prepare($sql)->execute();
     }
-    
+
     public function dropTable($table_name) {
         myPDO::get()->prepare("DROP TABLE $table_name")->execute();
     }
-    
+
     public function executeRawQuery($query) {
         myPDO::get()->prepare($query)->execute();
     }
@@ -245,11 +247,11 @@ class QueryManager {
     public function beginTransaction() {
         myPDO::get()->beginTransaction();
     }
-    
+
     public function commit() {
         myPDO::get()->commit();
     }
-    
+
     public function rollback() {
         myPDO::get()->rollback();
     }
@@ -273,5 +275,5 @@ class QueryManager {
         }
 		return self::$instance;
 	}
-    
+
 }
