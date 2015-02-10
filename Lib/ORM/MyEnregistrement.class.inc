@@ -79,7 +79,8 @@ abstract class MyEnregistrement extends Enregistrement {
      */
     protected static $validate = array();
 
-    private static $order = NULL;
+    protected static $order = NULL;
+    protected static $limit = NULL;
 
     /**
      * Constructeur d'enregistrement
@@ -192,7 +193,7 @@ abstract class MyEnregistrement extends Enregistrement {
     protected static function allBy($cond = "") {
         $records = new \Collection();
         // Execution de la requete avec le parametre et lecture du resultat
-        foreach (QueryManager::get()->select(static::table())->where($cond)->order(self::$order)->execute() as $record) {
+        foreach (QueryManager::get()->select(static::table())->where($cond)->order(static::$order)->execute() as $record) {
             if (!is_null($record)) {
                 $records->push(new static($record));
             }
@@ -206,6 +207,23 @@ abstract class MyEnregistrement extends Enregistrement {
      */
     public static function all() {
         return self::allBy();
+    }
+
+
+    public static function where($_params = []) {
+        $_params += ['params' => array(), 'limit' => static::$limit, 'order' => static::$order];
+        $params = array();
+        foreach ($_params['params'] as $key => $value) {
+            $params[] = "$key = '$value'";
+        }
+        $collection = QueryManager::get()->select(static::table())->where($params)->order($_params['order'])->limit($_params['limit'])->execute();
+        $records = new \Collection();
+        foreach ($collection as $record) {
+            if (!is_null($record)) {
+                $records->push(new static($record));
+            }
+        }
+        return $records;
     }
 
     /**

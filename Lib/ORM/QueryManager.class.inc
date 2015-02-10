@@ -166,7 +166,7 @@ class QueryManager {
      * @return \ORM\QueryManager l'instance (pour la chainabilité)
      */
     public function limit($number, $offset = 0) {
-        $this->limit = 'LIMIT ' . $offset . ', ' . $number;
+        $this->limit = 'LIMIT ' . $number . ' OFFSET ' . $offset ;
         return $this;
     }
 
