@@ -23,19 +23,24 @@ Run.prototype.getPoints = function () {
     this.runners[i].addPoint(this.runners[i].currentLat + delta_lat, this.runners[i].currentLng + delta_lng, new Date());
   }*/
   $.getJSON("./points/", function(points) {
-    for (i = 0; i < NB_RUNNER; i++) {
+    for (var i = 0; i < NB_RUNNER; i++) {
         delta_lat =0; ((Math.random() - 0.5)/1000)
         delta_lng =0; ((Math.random() - 0.5)/1000)
-        for(j = 0; j < points.length; j++) {
-              run.runners[i].addPoint(points[j].lat*1 + delta_lat, points[j].lng*1 + delta_lng, points[j].date);
+        var runner = run.runners[i];
+        for(var j = 0; j < points.length; j++) {
+          var point = points[j];
+          runner.addPoint(point.lat*1 + delta_lat, point.lng*1 + delta_lng, point.date);
         }
     }
     //setTimeout(run.getPoints, 100);
   });
- /* if (!map.getBounds().contains(marker.getPosition()))
-    map.setCenter(marker.getPosition());*/
+ /* */
 }
-
+function sleep(ms) {
+    if( ms != false ) {
+      setTimeout()
+    }
+}
 var run;
 function initialize() {
   MAP_OPTIONS = {
