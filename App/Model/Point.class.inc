@@ -27,8 +27,7 @@ use Lib\ORM;
  *
  */
 class Point extends ORM\MyEnregistrement {
-
-    private static $order = "datetime ASC";
+    protected static $order = "datetime ASC";
     /**
      * Stockage des relations avec les autres objets
      *    @access protected
