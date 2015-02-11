@@ -17,24 +17,16 @@ Run.prototype.launch = function() {
 };
 
 Run.prototype.getPoints = function () {
-  /*for (i = 0; i < NB_RUNNER; i++) {
-    delta_lat = ((Math.random() - 0.5)/10000)
-    delta_lng = ((Math.random() - 0.5)/10000)
-    this.runners[i].addPoint(this.runners[i].currentLat + delta_lat, this.runners[i].currentLng + delta_lng, new Date());
-  }*/
   $.getJSON("./points/", function(points) {
     for (var i = 0; i < NB_RUNNER; i++) {
-        delta_lat =0; ((Math.random() - 0.5)/1000)
-        delta_lng =0; ((Math.random() - 0.5)/1000)
         var runner = run.runners[i];
         for(var j = 0; j < points.length; j++) {
           var point = points[j];
-          runner.addPoint(point.lat*1 + delta_lat, point.lng*1 + delta_lng, point.date);
+          runner.addPoint(point.lat*1, point.lng*1, point.date);
         }
     }
     //setTimeout(run.getPoints, 100);
   });
- /* */
 }
 function sleep(ms) {
     if( ms != false ) {

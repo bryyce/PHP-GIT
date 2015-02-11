@@ -80,6 +80,7 @@ abstract class MyEnregistrement extends Enregistrement {
     protected static $validate = array();
 
     protected static $order = NULL;
+    protected static $offset = NULL;
     protected static $limit = NULL;
 
     /**
@@ -211,12 +212,13 @@ abstract class MyEnregistrement extends Enregistrement {
 
 
     public static function where($_params = []) {
-        $_params += ['params' => array(), 'limit' => static::$limit, 'order' => static::$order];
+        $_params += ['params' => array(), 'limit' => static::$limit, 'offset' => static::$offset, 'order' => static::$order];
         $params = array();
         foreach ($_params['params'] as $key => $value) {
             $params[] = "$key = '$value'";
         }
-        $collection = QueryManager::get()->select(static::table())->where($params)->order($_params['order'])->limit($_params['limit'])->execute();
+
+        $collection = QueryManager::get()->select(static::table())->where($params)->order($_params['order'])->limit($_params['limit'], $_params['offset'])->execute();
         $records = new \Collection();
         foreach ($collection as $record) {
             if (!is_null($record)) {

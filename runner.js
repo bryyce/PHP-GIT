@@ -1,5 +1,6 @@
 var NB_POINT = 1000;
-var STEP = 200;
+var STEP = 10;
+var TIMEOUT = 100;
 var Runner = function (_name, _lat, _lng, _date, _color) {
   this.smoothPoints = new Array({lat: _lat, lng: _lng});
   this.points = new Array({lat: _lat, lng: _lng});
@@ -49,7 +50,7 @@ Runner.prototype.addPoint = function(lat, lng, time) {
   this.time = new Date(time).getTime();
   this.date = time;
   var that = this;
-  setTimeout(function () {that.pushPoints(lat, lng)}, that.idx * 98 )
+  setTimeout(function () {that.pushPoints(lat, lng)}, that.idx * TIMEOUT -2 )
 };
 Runner.prototype.pushPoints = function(lat, lng, time) {
   var that = this;
@@ -60,35 +61,29 @@ Runner.prototype.pushPoints = function(lat, lng, time) {
   for(var i = 0; i < STEP; i++) {
     (pos.lat = pos.lat + diff_lat);
     (pos.lng = pos.lng + diff_lng);
-    setTimeout(function(__lat, __lng) { that.realPush(__lat, __lng)}, i * 0.5, pos.lat, pos.lng);
+    setTimeout(function(__lat, __lng) { that.realPush(__lat, __lng)}, i * TIMEOUT / STEP, pos.lat, pos.lng);
   }
-  setTimeout(function(__lat, __lng) { that.realPush(__lat, __lng, true)}, STEP * 0.5, lat, lng);
+  setTimeout(function(__lat, __lng) { that.realPush(__lat, __lng, true)}, STEP * TIMEOUT / STEP, lat, lng);
 }
 Runner.prototype.realPush = function (lat, lng, all) {
-  if (this.smoothPoints.length == NB_POINT)
-    this.smoothPoints.shift();
-  this.smoothPoints.push({"lat": lat, "lng": lng});
   if (all == true) {
     if (this.points.length == NB_POINT)
       this.points.shift();
     this.points.push({"lat": lat, "lng": lng});
     this.smoothPoints = new Array();
   }
+  if (this.smoothPoints.length == NB_POINT)
+    this.smoothPoints.shift();
+  this.smoothPoints.push({"lat": lat, "lng": lng});
   this.updatePosition({"lat": lat, "lng": lng})
 }
 
 Runner.prototype.updatePosition = function (pos) {
   this.marker.setPosition(pos);
-  /*new google.maps.Marker({
-    position: (pos == undefined ? this.getPosition(): pos),
-    map: run.map,
-    title: "Coureur " + this.name,
-    runner: this
-  });*/
   this.line.setPath(this.points.concat(this.smoothPoints));
   this.infowindow.setContent(this.toString())
   //if (!run.map.getBounds().contains(this.marker.getPosition()))
-    //run.map.setCenter(this.marker.getPosition());
+    run.map.setCenter(this.marker.getPosition());
 };
 
 Runner.prototype.getPosition = function() {
@@ -99,6 +94,6 @@ Runner.prototype.toString = function() {
   pad = "00"
   return "<h3>Coureur " + this.name + "</h3>" +
         "<div><b>Latitude : </b>" + this.getPosition().lat + "</div>" +
-        "<div><b>Longitude : </b>" + this.getPosition().lon + "</div>" +
+        "<div><b>Longitude : </b>" + this.getPosition().lng + "</div>" +
         "<div><b>Dernier point : </b>" + this.date + "</div>";
 };
