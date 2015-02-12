@@ -51,13 +51,16 @@ class Router {
     public function getCurrentRoute($request_url, $request_method = 'GET'){
         foreach ($this->_routes as $route) {
             if ($request_method == $route->Get('method')) {
-                $route_name = preg_replace('/\:([a-z]*)/', '([a-zA-Z0-9]*)', $route->Get('name'));
+                $route_name = preg_replace('/\:([a-zA-Z]*)/', '([a-zA-Z0-9]*)', $route->Get('name'));
                 if (preg_match('|^'.$route_name.'$|', $request_url, $vars) !== 0) {
-                    preg_match('/\:([a-z]*)/', $route->Get('name'), $vars_name);
+                    preg_match_all('/\:([a-zA-Z]*)/', $route->Get('name'), $vars_name);
+                    $params = array();
                     unset($vars[0]);
-                    unset($vars_name[0]);
-                    $vars = array_combine($vars_name, $vars);
-                    return ['controller' => $route->Get('controller'), 'action' => $route->Get('action'), 'params' => $vars];
+                    if (count($vars) > 0) {
+                            $params += array_combine($vars_name[1], $vars);
+                    }
+                    //unset($vars_name[0]);
+                    return ['controller' => $route->Get('controller'), 'action' => $route->Get('action'), 'params' => $params];
                 }
             }
         }

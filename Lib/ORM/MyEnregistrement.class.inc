@@ -80,7 +80,7 @@ abstract class MyEnregistrement extends Enregistrement {
     protected static $validate = array();
 
     protected static $order = NULL;
-    protected static $offset = NULL;
+    protected static $offset = 0;
     protected static $limit = NULL;
 
     /**
@@ -107,15 +107,17 @@ abstract class MyEnregistrement extends Enregistrement {
                 static::$has_one[$k]['primary_key'] = $k . '_id';
             }
             if (!array_key_exists('class', static::$has_one[$k])) {
-                static::$has_one[$k]['class'] = 'Model\\' . ucfirst($k);
+                static::$has_one[$k]['class'] = 'App\\Model\\' . ucfirst($k);
             }
         }
         foreach (static::$has_many as $k => $v) {
             if (!array_key_exists('primary_key', static::$has_many[$k])) {
-                static::$has_many[$k]['primary_key'] = $k . '_id';
+                static::$has_many[$k]['primary_key'] = static::revertTable(static::table()) . '_id';
+              //0  static::$has_many[$k]['primary_key'] = $k . '_id';
             }
             if (!array_key_exists('class', static::$has_many[$k])) {
-                static::$has_many[$k]['class'] = 'App\\Model\\' . ucfirst($k);
+                //static::$has_many[$k]['class'] = 'App\\Model\\' . ucfirst($k);
+                static::$has_many[$k]['class'] = 'App\\Model\\' . ucfirst(static::revertTable($k));
             }
         }
         foreach (static::$has_and_belongs_to_many as $k => $v) {
@@ -186,6 +188,10 @@ abstract class MyEnregistrement extends Enregistrement {
         return Config\DBConfig::getTable(static::getClassName());
     }
 
+    protected static function revertTable($table) {
+        return Config\DBConfig::getKeyTable($table);
+    }
+
     /**
      *    Retourne une collection d'enregistrements de la table sql de l'instance en fonction d'une condition sql
      * @param string $cond la condition sql
@@ -215,7 +221,12 @@ abstract class MyEnregistrement extends Enregistrement {
         $_params += ['params' => array(), 'limit' => static::$limit, 'offset' => static::$offset, 'order' => static::$order];
         $params = array();
         foreach ($_params['params'] as $key => $value) {
-            $params[] = "$key = '$value'";
+            if (is_array($value)) {
+                $value = join(" ",$value);
+            } else {
+                $value  = '$value';
+            }
+            $params[] = "$key $value";
         }
 
         $collection = QueryManager::get()->select(static::table())->where($params)->order($_params['order'])->limit($_params['limit'], $_params['offset'])->execute();
@@ -239,7 +250,7 @@ abstract class MyEnregistrement extends Enregistrement {
             $params[] = "$key = '$value'";
         }
         $collection = QueryManager::get()->select(static::table())->where($params)->order('id')->limit(1)->execute();
-        return static::load($collection->count() ? $collection->first() : array());
+        return new static($collection->count() ? $collection->first() : array());
     }
 
     /**
@@ -253,7 +264,7 @@ abstract class MyEnregistrement extends Enregistrement {
             $params[] = "$key = '$value'";
         }
         $collection = QueryManager::get()->select(static::table())->where($params)->order('id DESC')->limit(1)->execute();
-        return static::load($collection->count() ? $collection->first() : array());
+        return new static($collection->count() ? $collection->first() : array());
     }
 
     /**
@@ -339,18 +350,18 @@ abstract class MyEnregistrement extends Enregistrement {
             $class = static::$has_one[$_cle]['class'];
             if (!array_key_exists($_cle, static::$relations_elem) || static::$relations_elem[$_cle] == null) {
                 static::$relations_elem[$_cle] = new $class;
-                if ($this->$id_assoc) {
-                    static::$relations_elem[$_cle] = $class::first(array("id" => $this->$id_assoc));
+                if ($this->get_primary_key_value()) {
+                    static::$relations_elem[$_cle] = $class::first(array("$id_assoc" => $this->get_primary_key_value()));
                 }
             }
         }
-        else if (array_key_exists($_cle, static::$has_many)) {
-            $id_assoc = static::$has_many[$_cle]['primary_key'];
-            $class = static::$has_many[$_cle]['class'];
+        else if (array_key_exists($_cle, static::$belongs_to)) {
+            echo $id_assoc = static::$belongs_to[$_cle]['primary_key'];
+            echo $class = static::$belongs_to[$_cle]['class'];
             if (!array_key_exists($_cle, static::$relations_elem) || static::$relations_elem[$_cle] == null) {
                 static::$relations_elem[$_cle] = new \Collection();
                 if ($this->$id_assoc) {
-                    static::$relations_elem[$_cle] = $class::AllBy("id = {$this->$id_assoc}");
+                    static::$relations_elem[$_cle] = $class::first("id = {$this->$id_assoc}");
                 }
             }
         }
@@ -373,13 +384,19 @@ abstract class MyEnregistrement extends Enregistrement {
                     }
                 }
             }
-        } else if (array_key_exists($_cle, static::$belongs_to)) {
-            $id_assoc = static::$belongs_to[$_cle]['primary_key'];
-            $class = static::$belongs_to[$_cle]['class'];
+        } else if (array_key_exists($_cle, static::$has_many)) {
+            var_dump('ici');
+            echo PHP_EOL;
+            echo PHP_EOL;
+            echo PHP_EOL;
+            echo PHP_EOL;
+            echo PHP_EOL;
+            echo $id_assoc = static::$has_many[$_cle]['primary_key'];
+            echo $class = static::$has_many[$_cle]['class'];
             if (!array_key_exists($_cle, static::$relations_elem) || static::$relations_elem[$_cle] == null) {
                 static::$relations_elem[$_cle] = new $class;
                 if ($this->get_primary_key_value()) {
-                    static::$relations_elem[$_cle] = $class::first("$id_assoc = {$this->get_primary_key_value()}");
+                    static::$relations_elem[$_cle] = $class::AllBy("$id_assoc = {$this->get_primary_key_value()}");
                 }
             }
         } else {

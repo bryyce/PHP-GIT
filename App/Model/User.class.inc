@@ -26,7 +26,8 @@ class User extends ORM\MyEnregistrement
      *    @access protected
      * @static array
      */
-    protected static $has_and_belongs_to_many = array('profiles' => array());
+    //protected static $has_and_belongs_to_many = array('profiles' => array());
+    protected static $has_many = array('points' => array(/**/));
     public $password_confirmation;
     /**
      * Ensemble des validations a effectuer avant de sauvegarder

@@ -1,5 +1,14 @@
 var NB_RUNNER = 1;
 var MAP_OPTIONS;
+var TYPE = 'replay'; // direct|replay
+// var prevPointDefered =
+var LATE = 10;
+
+$(document).ready(function() {
+  $("#late").change(function(){
+    LATE = $(this).val();
+  });
+});
 
 var Run = function () {
   this.startDate = new Date();
@@ -17,7 +26,7 @@ Run.prototype.launch = function() {
 };
 
 Run.prototype.getPoints = function () {
-  $.getJSON("./points/", function(points) {
+  $.getJSON("./points/" + (Math.round(new Date().getTime()/1000) - 3600 * LATE) + '/', function(points) {
     for (var i = 0; i < NB_RUNNER; i++) {
         var runner = run.runners[i];
         for(var j = 0; j < points.length; j++) {
@@ -25,7 +34,7 @@ Run.prototype.getPoints = function () {
           runner.addPoint(point.lat*1, point.lng*1, point.date);
         }
     }
-    //setTimeout(run.getPoints, 100);
+    run.getPoints();
   });
 }
 function sleep(ms) {

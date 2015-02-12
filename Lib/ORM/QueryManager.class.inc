@@ -166,7 +166,8 @@ class QueryManager {
      * @return \ORM\QueryManager l'instance (pour la chainabilité)
      */
     public function limit($number, $offset = 0) {
-        $this->limit = 'LIMIT ' . $number . ' OFFSET ' . $offset ;
+        if (!is_null($number))
+            $this->limit = 'LIMIT ' . $number . ' OFFSET ' . $offset ;
         return $this;
     }
 
@@ -206,7 +207,7 @@ class QueryManager {
      */
     public function execute() {
         $query = myPDO::get()->prepare(
-                $this->expectedQuery()
+            $this->expectedQuery()
         );
         $enregistrements = new \Collection();
         if ($query->execute()) {

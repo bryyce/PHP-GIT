@@ -40,17 +40,18 @@ class DBConfig {
         'users' =>
         array('id' => 'id',
               'login' => "login",
-              'mail' => 'e-mail',
+             // 'mail' => 'e-mail',
               'password' => 'mot de passe',
-              'salt' => 'salt',
-              'created_at' => 'crée le',
-              'updated_at' => 'mis à jour le'
+              //'salt' => 'salt',
+             // 'created_at' => 'crée le',
+             // 'updated_at' => 'mis à jour le'
         ),
         'points' => array(
             'id' => 'id',
             'latitude' => 'latitude',
             'longitude' => 'longitude',
             'datetime' => 'date',
+            'user_id' => 'user_id',
         ),
          'profiles' =>
          array('id' => 'id',
@@ -75,6 +76,10 @@ class DBConfig {
      */
     public static function getTable($class) {
         return static::$tables[$class];
+    }
+
+    public static function getKeyTable($table) {
+        return array_keys(static::$tables, $table)[0];
     }
 
 }
