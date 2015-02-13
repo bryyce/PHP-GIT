@@ -255,4 +255,3 @@ class myPDO {
     }
 
 }
-myPDO::parametres('pgsql:host=ec2-50-17-233-228.compute-1.amazonaws.com;port=5432;dbname=d3i9s2mfp7pcb3', 'hyvxggdazlegfk', 'YkIb_epPO0_oYGfXdwhhsvTuKo');
